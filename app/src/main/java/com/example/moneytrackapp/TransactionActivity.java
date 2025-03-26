@@ -37,7 +37,6 @@ public class TransactionActivity extends AppCompatActivity {
 
         paginationContainer = findViewById(R.id.paginationContainer);
 
-        // Simulasi seluruh transaksi (replace ini nanti dengan API/database)
         allTransactions = getAllTransactions();
 
         setupPagination();
@@ -45,11 +44,10 @@ public class TransactionActivity extends AppCompatActivity {
     }
 
     private void setupPagination() {
-        paginationContainer.removeAllViews(); // Bersihkan tombol sebelumnya
+        paginationContainer.removeAllViews();
 
         int totalPages = (int) Math.ceil((double) allTransactions.size() / ITEMS_PER_PAGE);
 
-        // 🔹 Tombol "<" (prev)
         TextView prevBtn = new TextView(this);
         prevBtn.setText("<");
         prevBtn.setTextColor(Color.WHITE);
@@ -64,7 +62,6 @@ public class TransactionActivity extends AppCompatActivity {
         });
         paginationContainer.addView(prevBtn);
 
-        // 🔢 Tombol halaman 1, 2, 3, ...
         for (int i = 1; i <= totalPages; i++) {
             TextView pageBtn = new TextView(this);
             pageBtn.setText(String.valueOf(i));
@@ -80,7 +77,6 @@ public class TransactionActivity extends AppCompatActivity {
             paginationContainer.addView(pageBtn);
         }
 
-        // 🔹 Tombol ">" (next)
         TextView nextBtn = new TextView(this);
         nextBtn.setText(">");
         nextBtn.setTextColor(Color.WHITE);
@@ -112,8 +108,7 @@ public class TransactionActivity extends AppCompatActivity {
             adapter.updateData(pageItems);
         }
 
-        // ✅ Set tinggi RecyclerView berdasarkan jumlah item
-        int itemHeightDp = 120; // Sesuaikan dengan tinggi item_transaction
+        int itemHeightDp = 120;
         float scale = getResources().getDisplayMetrics().density;
         int itemHeightPx = (int) (itemHeightDp * scale + 0.5f);
 

@@ -10,7 +10,6 @@
     android:padding="12dp"
     android:elevation="2dp">
 
-    <!-- Kategori -->
     <TextView
         android:id="@+id/labelCategory"
         android:layout_width="wrap_content"
@@ -25,7 +24,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
 
-    <!-- Tanggal -->
     <TextView
         android:id="@+id/labelDate"
         android:layout_width="wrap_content"
@@ -36,7 +34,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- Nominal -->
     <TextView
         android:id="@+id/labelAmount"
         android:layout_width="wrap_content"
@@ -48,7 +45,6 @@
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="12dp"/>
 
-    <!-- Deskripsi -->
     <TextView
         android:id="@+id/labelDescription"
         android:layout_width="wrap_content"
