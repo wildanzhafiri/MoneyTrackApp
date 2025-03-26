@@ -14,8 +14,6 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- Semua isi layout dimasukkan ke dalam LinearLayout ini -->
-
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/topAppBar"
             android:layout_width="match_parent"
@@ -93,7 +91,6 @@
             android:elevation="6dp"
             android:layout_marginBottom="16dp">
 
-            <!-- Judul dan tombol All -->
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -114,14 +111,12 @@
                     android:padding="4dp" />
             </RelativeLayout>
 
-            <!-- RecyclerView -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/transactionRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"/>
 
-            <!-- Pagination tombol -->
             <HorizontalScrollView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -149,7 +144,6 @@
                         android:clickable="true"
                         android:focusable="true" />
 
-                    <!-- Akan diisi tombol 1 - 6 di Java -->
 
                     <TextView
                         android:id="@+id/btnNext"
