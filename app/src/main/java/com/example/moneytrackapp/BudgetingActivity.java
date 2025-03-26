@@ -16,6 +16,6 @@ public class BudgetingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_budgeting);
 
         BottomNavbarView bottomNav = findViewById(R.id.bottom_nav);
-        bottomNav.setActiveIcon(R.id.home);
+        bottomNav.setActiveIcon(R.id.budgeting);
     }
 }

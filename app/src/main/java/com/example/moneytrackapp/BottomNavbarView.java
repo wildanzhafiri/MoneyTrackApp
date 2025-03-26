@@ -11,10 +11,11 @@ import android.view.View;
 
 import com.example.moneytrackapp.DashboardActivity;
 import com.example.moneytrackapp.AddTransactionActivity;
+import com.example.moneytrackapp.TransactionActivity;
 
 public class BottomNavbarView extends LinearLayout {
 
-    private ImageView iconHome, iconTransaction, iconAdd, iconCalculator, iconSetting;
+    private ImageView iconHome, iconTransaction, iconAdd, iconBudget, iconSetting;
     private View indicatorHome, indicatorTransaction, indicatorAdd, indicatorCalculator, indicatorSetting;
 
     public BottomNavbarView(Context context, AttributeSet attrs) {
@@ -28,13 +29,13 @@ public class BottomNavbarView extends LinearLayout {
         iconHome = findViewById(R.id.home);
         iconTransaction = findViewById(R.id.transaction);
         iconAdd = findViewById(R.id.add_transaction);
-        iconCalculator = findViewById(R.id.calculator);
+        iconBudget = findViewById(R.id.budgeting);
         iconSetting = findViewById(R.id.setting);
 
         indicatorHome = findViewById(R.id.indicator_home);
         indicatorTransaction = findViewById(R.id.indicator_transaction);
         indicatorAdd = findViewById(R.id.indicator_add_transaction);
-        indicatorCalculator = findViewById(R.id.indicator_calculator);
+        indicatorCalculator = findViewById(R.id.indicator_budgeting);
         indicatorSetting = findViewById(R.id.indicator_setting);
 
         iconHome.setOnClickListener(v -> {
@@ -46,6 +47,18 @@ public class BottomNavbarView extends LinearLayout {
         iconAdd.setOnClickListener(v -> {
             if (!(context instanceof AddTransactionActivity)) {
                 context.startActivity(new Intent(context, AddTransactionActivity.class));
+            }
+        });
+
+        iconTransaction.setOnClickListener(v -> {
+            if (!(context instanceof TransactionActivity)) {
+                context.startActivity(new Intent(context, TransactionActivity.class));
+            }
+        });
+
+        iconBudget.setOnClickListener(v -> {
+            if (!(context instanceof BudgetingActivity)) {
+                context.startActivity(new Intent(context, BudgetingActivity.class));
             }
         });
 
@@ -63,8 +76,8 @@ public class BottomNavbarView extends LinearLayout {
         } else if (id == R.id.add_transaction) {
             iconAdd.setColorFilter(Color.parseColor("#000878"));
             indicatorAdd.setVisibility(View.VISIBLE);
-        } else if (id == R.id.calculator) {
-            iconCalculator.setColorFilter(Color.parseColor("#000878"));
+        } else if (id == R.id.budgeting) {
+            iconBudget.setColorFilter(Color.parseColor("#000878"));
             indicatorCalculator.setVisibility(View.VISIBLE);
         } else if (id == R.id.setting) {
             iconSetting.setColorFilter(Color.parseColor("#000878"));
@@ -76,7 +89,7 @@ public class BottomNavbarView extends LinearLayout {
         iconHome.setColorFilter(Color.WHITE);
         iconTransaction.setColorFilter(Color.WHITE);
         iconAdd.setColorFilter(Color.WHITE);
-        iconCalculator.setColorFilter(Color.WHITE);
+        iconBudget.setColorFilter(Color.WHITE);
         iconSetting.setColorFilter(Color.WHITE);
 
         indicatorHome.setVisibility(View.GONE);

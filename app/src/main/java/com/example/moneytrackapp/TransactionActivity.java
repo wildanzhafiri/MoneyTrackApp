@@ -4,12 +4,17 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -31,6 +36,32 @@ public class TransactionActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_tansaction);
+
+        Toolbar toolbar = findViewById(R.id.topAppBar);
+        toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Transaction Report");
+        ImageView menuIcon = new ImageView(this);
+        menuIcon.setImageResource(R.drawable.ic_menu);
+        Toolbar.LayoutParams layoutParams = new Toolbar.LayoutParams(
+                Toolbar.LayoutParams.WRAP_CONTENT,
+                Toolbar.LayoutParams.WRAP_CONTENT,
+                Gravity.END
+        );
+        menuIcon.setLayoutParams(layoutParams);
+        menuIcon.setPadding(0, 0, 36, 0);
+
+
+        toolbar.addView(menuIcon);
+
+
+        menuIcon.setOnClickListener(v -> {
+            Toast.makeText(this, "Menu clicked", Toast.LENGTH_SHORT).show();
+        });
+
+
+        BottomNavbarView bottomNav = findViewById(R.id.bottom_nav);
+        bottomNav.setActiveIcon(R.id.transaction);
 
         recyclerView = findViewById(R.id.transactionRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
