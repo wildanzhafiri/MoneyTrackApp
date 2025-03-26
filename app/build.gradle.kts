@@ -4,7 +4,7 @@ plugins {
 
 android {
     namespace = "com.example.moneytrackapp"
-    compileSdk = 34
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.moneytrackapp"
