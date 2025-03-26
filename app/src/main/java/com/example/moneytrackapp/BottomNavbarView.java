@@ -11,6 +11,7 @@ import android.view.View;
 
 import com.example.moneytrackapp.DashboardActivity;
 import com.example.moneytrackapp.AddTransactionActivity;
+import com.example.moneytrackapp.TransactionActivity;
 
 public class BottomNavbarView extends LinearLayout {
 
@@ -46,6 +47,18 @@ public class BottomNavbarView extends LinearLayout {
         iconAdd.setOnClickListener(v -> {
             if (!(context instanceof AddTransactionActivity)) {
                 context.startActivity(new Intent(context, AddTransactionActivity.class));
+            }
+        });
+
+        iconTransaction.setOnClickListener(v -> {
+            if (!(context instanceof TransactionActivity)) {
+                context.startActivity(new Intent(context, TransactionActivity.class));
+            }
+        });
+
+        iconCalculator.setOnClickListener(v -> {
+            if (!(context instanceof BudgetingActivity)) {
+                context.startActivity(new Intent(context, BudgetingActivity.class));
             }
         });
 
