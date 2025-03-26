@@ -61,7 +61,7 @@ public class TransactionActivity extends AppCompatActivity {
 
 
         BottomNavbarView bottomNav = findViewById(R.id.bottom_nav);
-        bottomNav.setActiveIcon(R.id.add_transaction);
+        bottomNav.setActiveIcon(R.id.transaction);
 
         recyclerView = findViewById(R.id.transactionRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
