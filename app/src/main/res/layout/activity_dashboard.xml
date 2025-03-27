@@ -47,6 +47,7 @@
                         android:textSize="18sp" />
 
                     <TextView
+                        android:id="@+id/username_text"
                         android:text="Willy"
                         android:textColor="@android:color/white"
                         android:textSize="18sp"
