@@ -149,7 +149,7 @@ public class TransactionActivity extends AppCompatActivity {
     }
 
 
-    private List<Transaction> getAllTransactions() {
+    public static List<Transaction> getAllTransactions() {
         List<Transaction> list = new ArrayList<>();
         list.add(new Transaction("Makan", "Rp 20.000", "Ayam Ungkep Reguler", "27/01/2025", R.drawable.category_label_background));
         list.add(new Transaction("Sangu", "Rp 100.000", "Sangu dari mamah", "25/01/2025", R.drawable.category_label_background_green));
