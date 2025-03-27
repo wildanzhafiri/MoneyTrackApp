@@ -1,0 +1,6 @@
+<resources>
+    <string-array name="transaction_types">
+        <item>Expense</item>
+        <item>Income</item>
+    </string-array>
+</resources>
