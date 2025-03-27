@@ -26,13 +26,10 @@ public class SettingsActivity extends AppCompatActivity {
         });
 
         backButton = findViewById(R.id.btn_go_back);
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(SettingsActivity.this, ProfileActivity.class);
-                startActivity(intent);
-                finish();
-            }
+        backButton.setOnClickListener(view -> {
+            Intent intent = new Intent(SettingsActivity.this, ProfileActivity.class);
+            startActivity(intent);
+            finish();
         });
     }
 
