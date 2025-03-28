@@ -2,8 +2,8 @@ package com.example.moneytrackapp;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,7 +12,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 public class SettingsActivity extends AppCompatActivity {
-    protected Button backButton;
+    private Button backButton;
+    private ImageView dropdownCategories;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +32,13 @@ public class SettingsActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         });
+
+        dropdownCategories = findViewById(R.id.dropdown_right_categories);
+        dropdownCategories.setOnClickListener(view -> {
+            Intent intent = new Intent(SettingsActivity.this, ManageCategory.class);
+            startActivity(intent);
+        });
+
     }
 
 }
