@@ -38,7 +38,11 @@ public class LoginActivity extends AppCompatActivity {
                 } else {
                     // Di implementasi nyata, tambahkan autentikasi
                     Toast.makeText(LoginActivity.this, "Login berhasil", Toast.LENGTH_SHORT).show();
-                    // TODO: Navigasi ke dashboard atau halaman utama setelah login
+                    // Navigate to dashboard and pass the username
+                    Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
+                    intent.putExtra("USERNAME", username);
+                    startActivity(intent);
+                    finish(); // Close the login activity
                 }
             }
         });
