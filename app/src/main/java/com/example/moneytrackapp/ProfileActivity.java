@@ -34,7 +34,7 @@ public class ProfileActivity extends AppCompatActivity {
         });
 
         logoutButton.setOnClickListener(view -> {
-            Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
+            Intent intent = new Intent(ProfileActivity.this, WelcomeActivity.class);
             startActivity(intent);
             finish();
         });
