@@ -21,13 +21,12 @@ public class DashboardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
 
-        // Get username from intent and set it to the greeting text
         String username = getIntent().getStringExtra("USERNAME");
         TextView usernameText = findViewById(R.id.username_text);
         if (username != null && !username.isEmpty()) {
             usernameText.setText(username);
         } else {
-            usernameText.setText("User"); // Default name if no username is provided
+            usernameText.setText("User");
         }
 
         BottomNavbarView bottomNav = findViewById(R.id.bottom_nav);
@@ -36,7 +35,7 @@ public class DashboardActivity extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.transactionRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        List<Transaction> allTransactions = TransactionActivity.getAllTransactions();
+        List<Transaction> allTransactions = TransactionRepository.getLatestTransactions(5);
 
         List<Transaction> latestTransactions = allTransactions.subList(0, Math.min(5, allTransactions.size()));
 

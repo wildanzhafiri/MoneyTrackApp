@@ -68,7 +68,7 @@ public class TransactionActivity extends AppCompatActivity {
 
         paginationContainer = findViewById(R.id.paginationContainer);
 
-        allTransactions = getAllTransactions();
+        allTransactions = TransactionRepository.getAllTransactions();
 
         setupPagination();
         loadTransactionsForPage(1);
@@ -146,39 +146,5 @@ public class TransactionActivity extends AppCompatActivity {
         int visibleItemCount = pageItems.size();
         recyclerView.getLayoutParams().height = itemHeightPx * visibleItemCount;
         recyclerView.requestLayout();
-    }
-
-
-    public static List<Transaction> getAllTransactions() {
-        List<Transaction> list = new ArrayList<>();
-        list.add(new Transaction("Makan", "Rp 20.000", "Ayam Ungkep Reguler", "27/01/2025", R.drawable.category_label_background));
-        list.add(new Transaction("Sangu", "Rp 100.000", "Sangu dari mamah", "25/01/2025", R.drawable.category_label_background_green));
-        list.add(new Transaction("Jajan", "Rp 9.000", "Kue Sus", "25/01/2025", R.drawable.category_label_background_green));
-        list.add(new Transaction("Joki", "Rp 50.000", "Laprak PAW", "24/01/2025", R.drawable.category_label_background));
-        list.add(new Transaction("Bensin", "Rp 30.000", "Sangu dari mamah", "24/01/2025", R.drawable.category_label_background));
-        list.add(new Transaction("Makan", "Rp 10.000", "Tahu Telor", "24/01/2025", R.drawable.category_label_background));
-        list.add(new Transaction("Lainnya", "Rp 0", "Tidak ada transaksi", "—", R.drawable.category_label_background));
-        list.add(new Transaction("Makan", "Rp 20.000", "Ayam Ungkep Reguler", "27/01/2025", R.drawable.category_label_background));
-        list.add(new Transaction("Sangu", "Rp 100.000", "Sangu dari mamah", "25/01/2025", R.drawable.category_label_background_green));
-        list.add(new Transaction("Jajan", "Rp 9.000", "Kue Sus", "25/01/2025", R.drawable.category_label_background_green));
-        list.add(new Transaction("Joki", "Rp 50.000", "Laprak PAW", "24/01/2025", R.drawable.category_label_background));
-        list.add(new Transaction("Bensin", "Rp 30.000", "Sangu dari mamah", "24/01/2025", R.drawable.category_label_background));
-        list.add(new Transaction("Makan", "Rp 10.000", "Tahu Telor", "24/01/2025", R.drawable.category_label_background));
-        list.add(new Transaction("Lainnya", "Rp 0", "Tidak ada transaksi", "—", R.drawable.category_label_background));
-        list.add(new Transaction("Makan", "Rp 20.000", "Ayam Ungkep Reguler", "27/01/2025", R.drawable.category_label_background));
-        list.add(new Transaction("Sangu", "Rp 100.000", "Sangu dari mamah", "25/01/2025", R.drawable.category_label_background_green));
-        list.add(new Transaction("Jajan", "Rp 9.000", "Kue Sus", "25/01/2025", R.drawable.category_label_background_green));
-        list.add(new Transaction("Joki", "Rp 50.000", "Laprak PAW", "24/01/2025", R.drawable.category_label_background));
-        list.add(new Transaction("Bensin", "Rp 30.000", "Sangu dari mamah", "24/01/2025", R.drawable.category_label_background));
-        list.add(new Transaction("Makan", "Rp 10.000", "Tahu Telor", "24/01/2025", R.drawable.category_label_background));
-        list.add(new Transaction("Lainnya", "Rp 0", "Tidak ada transaksi", "—", R.drawable.category_label_background));
-        list.add(new Transaction("Makan", "Rp 20.000", "Ayam Ungkep Reguler", "27/01/2025", R.drawable.category_label_background));
-        list.add(new Transaction("Sangu", "Rp 100.000", "Sangu dari mamah", "25/01/2025", R.drawable.category_label_background_green));
-        list.add(new Transaction("Jajan", "Rp 9.000", "Kue Sus", "25/01/2025", R.drawable.category_label_background_green));
-        list.add(new Transaction("Joki", "Rp 50.000", "Laprak PAW", "24/01/2025", R.drawable.category_label_background));
-        list.add(new Transaction("Bensin", "Rp 30.000", "Sangu dari mamah", "24/01/2025", R.drawable.category_label_background));
-        list.add(new Transaction("Makan", "Rp 10.000", "Tahu Telor", "24/01/2025", R.drawable.category_label_background));
-        list.add(new Transaction("Lainnya", "Rp 0", "Tidak ada transaksi", "—", R.drawable.category_label_background));
-        return list;
     }
 }
