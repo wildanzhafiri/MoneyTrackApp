@@ -13,10 +13,13 @@
         android:theme="@style/Theme.MoneyTrackApp"
         tools:targetApi="31">
         <activity
+            android:name=".AddCategoryActivity"
+            android:exported="false" />
+        <activity
             android:name=".EditCategoryActivity"
             android:exported="false" />
         <activity
-            android:name=".ManageCategory"
+            android:name=".ManageCategoryActivity"
             android:exported="false" />
         <activity
             android:name=".TransactionActivity"
