@@ -15,7 +15,8 @@ public class IconGridAdapter extends RecyclerView.Adapter<IconGridAdapter.ViewHo
 
     private final Context context;
     private final List<Integer> icons;
-    private int selectedPosition = -1; // No selection initially
+    private int selectedPosition = -1;
+    private OnIconClickListener listener;
 
     public IconGridAdapter(Context context, List<Integer> icons) {
         this.context = context;
@@ -41,9 +42,14 @@ public class IconGridAdapter extends RecyclerView.Adapter<IconGridAdapter.ViewHo
         }
 
         holder.itemView.setOnClickListener(v -> {
+            if (selectedPosition == position) {
+                return;
+            }
+
             int prevPosition = selectedPosition;
             selectedPosition = position;
-            notifyItemChanged(prevPosition);
+
+            if (prevPosition != -1) notifyItemChanged(prevPosition);
             notifyItemChanged(position);
 
             if (listener != null) {
@@ -71,7 +77,6 @@ public class IconGridAdapter extends RecyclerView.Adapter<IconGridAdapter.ViewHo
         if (selectedPosition != -1) notifyItemChanged(selectedPosition);
     }
 
-
     public int getSelectedIconRes() {
         return selectedPosition >= 0 ? icons.get(selectedPosition) : -1;
     }
@@ -79,8 +84,6 @@ public class IconGridAdapter extends RecyclerView.Adapter<IconGridAdapter.ViewHo
     public interface OnIconClickListener {
         void onIconClick(int iconRes);
     }
-
-    private OnIconClickListener listener;
 
     public void setOnIconClickListener(OnIconClickListener listener) {
         this.listener = listener;
