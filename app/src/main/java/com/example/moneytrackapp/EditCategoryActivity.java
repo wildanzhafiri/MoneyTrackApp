@@ -17,7 +17,7 @@ import java.util.List;
 public class EditCategoryActivity extends AppCompatActivity {
 
     private RecyclerView iconRecyclerView;
-    private EditText nameInput, budgetInput;
+    private EditText nameInput;
     private ImageView selectedIcon;
     private IconGridAdapter adapter;
     private int selectedIconRes = -1;
@@ -32,7 +32,6 @@ public class EditCategoryActivity extends AppCompatActivity {
         bottomNav.setActiveIcon(R.id.add_transaction);
 
         nameInput = findViewById(R.id.et_category_name);
-        budgetInput = findViewById(R.id.et_budget);
         iconRecyclerView = findViewById(R.id.icon_recycler);
         selectedIcon = findViewById(R.id.selected_icon);
 
@@ -71,21 +70,24 @@ public class EditCategoryActivity extends AppCompatActivity {
         Button btnDone = findViewById(R.id.btn_done);
         btnDone.setOnClickListener(v -> {
             String newCategoryName = nameInput.getText().toString().trim();
-            String budget = budgetInput.getText().toString().trim();
 
-            if (newCategoryName.isEmpty() || selectedIconRes == -1 || budget.isEmpty()) {
+            if (newCategoryName.isEmpty() || selectedIconRes == -1) {
                 ToastUtils.showStaticToast(this, "Please fill all fields");
             } else {
+                CategoryData.updateCategory(initialCategoryName, newCategoryName, selectedIconRes);
                 ToastUtils.showStaticToast(this, "Category updated successfully!");
                 finish();
             }
         });
 
+
         Button btnDelete = findViewById(R.id.btn_delete_category);
         btnDelete.setOnClickListener(v -> {
+            CategoryData.deleteCategory(initialCategoryName);
             ToastUtils.showStaticToast(this, "Category deleted successfully!");
             finish();
         });
+
 
     }
 }

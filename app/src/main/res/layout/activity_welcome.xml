@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white">
+
+    <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:cardElevation="4dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/gradient_background">
+
+            <TextView
+                    android:id="@+id/appTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="164dp"
+                    android:text="MoneyTrackApp"
+                    android:textColor="@android:color/white"
+                    android:textSize="32sp"
+                    android:textStyle="bold"
+                    android:fontFamily="sans-serif-black"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+
+            <ImageView
+                    android:id="@+id/appImage"
+                    android:layout_width="260dp"
+                    android:layout_height="260dp"
+                    android:layout_marginTop="220dp"
+                    android:src="@drawable/moneytrackapp_3"
+                    android:scaleType="centerCrop"
+                    android:visibility="visible"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+
+            <TextView
+                    android:id="@+id/tagline"
+                    android:layout_width="352dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="511dp"
+                    android:text="Track your money, anytime, anywhere"
+                    android:textColor="@android:color/white"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:fontFamily="sans-serif-medium"
+                    android:gravity="center"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+
+            <TextView
+                    android:id="@+id/description"
+                    android:layout_width="318dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="592dp"
+                    android:text="Welcome! Take control of your finances and start tracking your expenses and income effortlessly."
+                    android:textColor="@android:color/white"
+                    android:textSize="15sp"
+                    android:fontFamily="sans-serif"
+                    android:gravity="center"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+
+            <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/loginButton"
+                    android:layout_width="165dp"
+                    android:layout_height="63dp"
+                    android:layout_marginTop="707dp"
+                    android:layout_marginEnd="10dp"
+                    android:text="Login"
+                    android:textSize="24sp"
+                    android:textColor="@android:color/black"
+                    android:fontFamily="sans-serif-medium"
+                    android:background="@drawable/login_button_background"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/signupButton"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintHorizontal_chainStyle="packed"/>
+
+            <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/signupButton"
+                    android:layout_width="165dp"
+                    android:layout_height="63dp"
+                    android:layout_marginTop="707dp"
+                    android:layout_marginStart="10dp"
+                    android:text="Sign Up"
+                    android:textSize="24sp"
+                    android:textColor="@android:color/white"
+                    android:fontFamily="sans-serif-medium"
+                    android:background="@drawable/signup_button_background"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/loginButton"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+</androidx.constraintlayout.widget.ConstraintLayout>

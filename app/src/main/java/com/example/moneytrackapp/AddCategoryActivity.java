@@ -16,7 +16,7 @@ import java.util.List;
 public class AddCategoryActivity extends AppCompatActivity {
 
     private RecyclerView iconRecyclerView;
-    private EditText nameInput, budgetInput;
+    private EditText nameInput;
     private ImageView selectedIcon;
     private IconGridAdapter adapter;
     private int selectedIconRes = -1;
@@ -30,7 +30,6 @@ public class AddCategoryActivity extends AppCompatActivity {
         bottomNav.setActiveIcon(R.id.add_transaction);
 
         nameInput = findViewById(R.id.et_category_name);
-        budgetInput = findViewById(R.id.et_budget);
         iconRecyclerView = findViewById(R.id.icon_recycler);
         selectedIcon = findViewById(R.id.selected_icon);
 
@@ -56,11 +55,16 @@ public class AddCategoryActivity extends AppCompatActivity {
         Button btnAddCategory = findViewById(R.id.btn_add_category);
         btnAddCategory.setOnClickListener(v -> {
             String categoryName = nameInput.getText().toString().trim();
-            String budget = budgetInput.getText().toString().trim();
 
+            if (categoryName.isEmpty() || selectedIconRes == -1) {
+                ToastUtils.showStaticToast(this, "Please fill all fields");
+            } else {
+                CategoryData.addCategory(new Category(categoryName, selectedIconRes));
                 ToastUtils.showStaticToast(this, "Category added successfully!");
                 finish();
+            }
         });
+
 
     }
 }

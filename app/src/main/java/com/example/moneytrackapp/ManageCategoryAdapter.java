@@ -3,6 +3,7 @@ package com.example.moneytrackapp;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -15,10 +16,19 @@ public class ManageCategoryAdapter extends RecyclerView.Adapter<ManageCategoryAd
 
     private final Context context;
     private final List<Category> categoryList;
+    private OnStartDragListener dragStartListener;
 
     public ManageCategoryAdapter(Context context, List<Category> categoryList) {
         this.context = context;
         this.categoryList = categoryList;
+    }
+
+    public interface OnStartDragListener {
+        void onStartDrag(RecyclerView.ViewHolder viewHolder);
+    }
+
+    public void setDragStartListener(OnStartDragListener listener) {
+        this.dragStartListener = listener;
     }
 
     @NonNull
@@ -41,6 +51,13 @@ public class ManageCategoryAdapter extends RecyclerView.Adapter<ManageCategoryAd
             intent.putExtra("icon_res", item.getIconRes());
             context.startActivity(intent);
         });
+
+        holder.dragHandle.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN && dragStartListener != null) {
+                dragStartListener.onStartDrag(holder);
+            }
+            return false;
+        });
     }
 
     @Override
@@ -51,12 +68,14 @@ public class ManageCategoryAdapter extends RecyclerView.Adapter<ManageCategoryAd
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView icon;
         TextView name, edit;
+        ImageView dragHandle;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             icon = itemView.findViewById(R.id.category_icon);
             name = itemView.findViewById(R.id.category_name);
             edit = itemView.findViewById(R.id.edit_button);
+            dragHandle = itemView.findViewById(R.id.drag_handle);
         }
     }
 }

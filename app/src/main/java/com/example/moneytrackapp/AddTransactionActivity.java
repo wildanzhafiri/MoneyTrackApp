@@ -14,6 +14,7 @@ public class AddTransactionActivity extends AppCompatActivity {
 
     private Spinner spinner;
     private RecyclerView categoryRecycler;
+    private CategoryGridAdapter categoryAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +31,7 @@ public class AddTransactionActivity extends AppCompatActivity {
         categoryRecycler = findViewById(R.id.categoryRecyclerView);
         categoryRecycler.setLayoutManager(new GridLayoutManager(this, 3));
 
-        CategoryGridAdapter categoryAdapter = new CategoryGridAdapter(this, CategoryData.getCategories());
+        categoryAdapter = new CategoryGridAdapter(this, CategoryData.getCategories());
         categoryRecycler.setAdapter(categoryAdapter);
 
         categoryAdapter.setOnCategoryClickListener(categoryName -> {
@@ -51,5 +52,13 @@ public class AddTransactionActivity extends AppCompatActivity {
 
         BottomNavbarView bottomNav = findViewById(R.id.bottom_nav);
         bottomNav.setActiveIcon(R.id.add_transaction);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (categoryAdapter != null) {
+            categoryAdapter.notifyDataSetChanged();
+        }
     }
 }

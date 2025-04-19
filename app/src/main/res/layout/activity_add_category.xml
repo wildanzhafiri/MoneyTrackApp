@@ -98,33 +98,14 @@
 
             </LinearLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Budget"
-                android:textColor="#616161"
-                android:textSize="12sp"
-                android:layout_marginTop="5dp"
-                android:layout_marginStart="4dp"/>
 
-            <EditText
-                android:id="@+id/et_budget"
-                android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:inputType="numberDecimal"
-                android:background="@drawable/bg_input"
-                android:layout_marginTop="4dp"
-                android:layout_marginBottom="16dp"
-                android:paddingHorizontal="12dp"
-                android:textColor="#616161"/>
-
-            <!-- Grid icon -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_category_container"
                 android:orientation="vertical"
                 android:padding="16dp"
+                android:layout_marginTop="50dp"
                 android:elevation="2dp">
 
                 <TextView
