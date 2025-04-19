@@ -2,12 +2,10 @@ package com.example.moneytrackapp;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.ArrayAdapter;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -41,7 +39,7 @@ public class AddTransactionActivity extends AppCompatActivity {
 
         Button manageCategoryButton = findViewById(R.id.manage_category_button);
         manageCategoryButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this, ManageCategory.class);
+            Intent intent = new Intent(this, ManageCategoryActivity.class);
             startActivity(intent);
         });
 
