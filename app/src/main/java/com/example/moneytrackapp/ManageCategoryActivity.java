@@ -8,10 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.moneytrackapp.ManageCategoryAdapter;
-import com.example.moneytrackapp.CategoryData;
-
-public class ManageCategory extends AppCompatActivity {
+public class ManageCategoryActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +27,7 @@ public class ManageCategory extends AppCompatActivity {
 
         Button addCategoryButton = findViewById(R.id.btn_add_category);
         addCategoryButton.setOnClickListener(v -> {
-            Intent intent = new Intent(ManageCategory.this, EditCategoryActivity.class);
+            Intent intent = new Intent(ManageCategoryActivity.this, AddCategoryActivity.class);
             intent.putExtra("mode", "add");
             startActivity(intent);
         });
