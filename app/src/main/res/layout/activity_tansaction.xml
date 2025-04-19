@@ -1,23 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".TransactionActivity">
 
-    <!-- Scrollable Content -->
     <ScrollView
         android:id="@+id/scroll_content"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:fillViewport="true"
         android:background="@color/white"
-        app:layout_constraintTop_toTopOf="parent"
+        android:fillViewport="true"
         app:layout_constraintBottom_toTopOf="@+id/bottom_nav"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -31,9 +29,9 @@
                 android:layout_height="wrap_content"
                 android:background="#0C1E5B"
                 android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
                 app:title="Transaction Report"
-                app:titleTextColor="@android:color/white"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+                app:titleTextColor="@android:color/white" />
 
             <!-- FILTER BUTTON -->
             <Button
@@ -42,8 +40,8 @@
                 android:layout_height="48dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="20dp"
-                android:text="All"
-                android:backgroundTint="#F7A93B" />
+                android:backgroundTint="#F7A93B"
+                android:text="All" />
 
             <!-- EXPENSE TITLE -->
             <TextView
@@ -61,8 +59,8 @@
                 android:id="@+id/expenseGraph"
                 android:layout_width="match_parent"
                 android:layout_height="204dp"
-                android:layout_marginTop="24dp"
                 android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="24dp"
                 android:scaleType="fitCenter"
                 app:srcCompat="@drawable/group35" />
 
@@ -82,8 +80,8 @@
                 android:id="@+id/incomeGraph"
                 android:layout_width="match_parent"
                 android:layout_height="201dp"
-                android:layout_marginTop="24dp"
                 android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="24dp"
                 android:scaleType="fitCenter"
                 app:srcCompat="@drawable/group37" />
 
@@ -103,12 +101,12 @@
                 android:id="@+id/transactionContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:layout_margin="16dp"
-                android:padding="16dp"
+                android:layout_marginBottom="16dp"
                 android:background="@drawable/transaction_container"
                 android:elevation="6dp"
-                android:layout_marginBottom="16dp">
+                android:orientation="vertical"
+                android:padding="16dp">
 
                 <!-- FILTER DROPDOWN -->
                 <RelativeLayout
@@ -120,15 +118,15 @@
                         android:id="@+id/btnAll"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="All"
-                        android:textColor="@android:color/white"
-                        android:textSize="14sp"
-                        android:drawableEnd="@drawable/ic_arrow_drop_down"
-                        android:drawablePadding="4dp"
                         android:layout_alignParentEnd="true"
                         android:clickable="true"
+                        android:drawableEnd="@drawable/ic_arrow_drop_down"
+                        android:drawablePadding="4dp"
                         android:focusable="true"
-                        android:padding="4dp" />
+                        android:padding="4dp"
+                        android:text="All"
+                        android:textColor="@android:color/white"
+                        android:textSize="14sp" />
                 </RelativeLayout>
 
                 <!-- TRANSACTION RECYCLER VIEW -->
@@ -149,32 +147,32 @@
                         android:id="@+id/paginationContainer"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:background="@drawable/pagination_bg"
-                        android:paddingHorizontal="16dp"
-                        android:paddingVertical="6dp"
                         android:layout_marginBottom="8dp"
-                        android:gravity="center">
+                        android:background="@drawable/pagination_bg"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:paddingHorizontal="16dp"
+                        android:paddingVertical="6dp">
 
                         <TextView
                             android:id="@+id/btnPrev"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="&lt;"
-                            android:textColor="@android:color/white"
-                            android:padding="6dp"
                             android:clickable="true"
-                            android:focusable="true" />
+                            android:focusable="true"
+                            android:padding="6dp"
+                            android:text="&lt;"
+                            android:textColor="@android:color/white" />
 
                         <TextView
                             android:id="@+id/btnNext"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="&gt;"
-                            android:textColor="@android:color/white"
-                            android:padding="6dp"
                             android:clickable="true"
-                            android:focusable="true" />
+                            android:focusable="true"
+                            android:padding="6dp"
+                            android:text="&gt;"
+                            android:textColor="@android:color/white" />
                     </LinearLayout>
                 </HorizontalScrollView>
             </LinearLayout>
@@ -187,6 +185,6 @@
         android:id="@+id/bottom_nav"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

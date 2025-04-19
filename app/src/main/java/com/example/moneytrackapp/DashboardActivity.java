@@ -71,4 +71,15 @@ public class DashboardActivity extends AppCompatActivity {
             startActivity(intent);
         });
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1 && resultCode == RESULT_OK) {
+            if (data != null && data.getBooleanExtra("deleted", false)) {
+                recreate(); // ini paling simple: reload seluruh activity
+            }
+        }
+    }
+
 }

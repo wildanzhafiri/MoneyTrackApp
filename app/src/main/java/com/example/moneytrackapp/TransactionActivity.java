@@ -1,5 +1,6 @@
 package com.example.moneytrackapp;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -147,4 +148,19 @@ public class TransactionActivity extends AppCompatActivity {
         recyclerView.getLayoutParams().height = itemHeightPx * visibleItemCount;
         recyclerView.requestLayout();
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 1 && resultCode == RESULT_OK) {
+            if (data != null && data.getBooleanExtra("deleted", false)) {
+                allTransactions = TransactionRepository.getAllTransactions();
+                setupPagination();
+                loadTransactionsForPage(currentPage);
+            }
+        }
+    }
+
+
 }
