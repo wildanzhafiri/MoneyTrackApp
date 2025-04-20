@@ -49,11 +49,11 @@ public class SettingsActivity extends AppCompatActivity {
 //            Intent intent = new Intent(SettingsActivity.this, WishlistActivity.class);
 //            startActivity(intent);
 //        });
-//
-//        dropdownCurrency.setOnClickListener(view -> {
-//            Intent intent = new Intent(SettingsActivity.this, CurrencyActivity.class);
-//            startActivity(intent);
-//        });
+
+        dropdownCurrency.setOnClickListener(view -> {
+            Intent intent = new Intent(SettingsActivity.this, CurrencyActivity.class);
+            startActivity(intent);
+        });
 
         logoutButton.setOnClickListener(view -> {
             Intent intent = new Intent(SettingsActivity.this, WelcomeActivity.class);
