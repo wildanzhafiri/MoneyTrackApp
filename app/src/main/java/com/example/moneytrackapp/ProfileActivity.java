@@ -4,41 +4,49 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-
-import androidx.activity.EdgeToEdge;
+import android.widget.Toast;
+import com.google.android.material.textfield.TextInputEditText;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+
+import java.util.Objects;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ProfileActivity extends AppCompatActivity {
-    protected Button settingsButton, logoutButton;
+
+    CircleImageView imageProfile;
+    TextInputEditText editUsername;
+    Button saveButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_profile);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
+
+        imageProfile = findViewById(R.id.profile_image);
+        editUsername = findViewById(R.id.username_input);
+        saveButton = findViewById(R.id.btn_save_profile);
+
+        //  Event when save button is clicked
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String username = Objects.requireNonNull(editUsername.getText()).toString().trim();
+                Toast.makeText(ProfileActivity.this, "Saved: " + username, Toast.LENGTH_SHORT).show();
+
+                // send username to SettingsActivity
+                Intent intent = new Intent(ProfileActivity.this, SettingsActivity.class);
+                intent.putExtra("username_key", username);
+                startActivity(intent);
+            }
         });
 
-        settingsButton = findViewById(R.id.btn_settings);
-        logoutButton = findViewById(R.id.btn_logout);
-
-        settingsButton.setOnClickListener(view -> {
-            Intent intent = new Intent(ProfileActivity.this, SettingsActivity.class);
-            startActivity(intent);
+        // Event when image profile is clicked
+        imageProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(ProfileActivity.this, "Change profile photo", Toast.LENGTH_SHORT).show();
+            }
         });
-
-        logoutButton.setOnClickListener(view -> {
-            Intent intent = new Intent(ProfileActivity.this, WelcomeActivity.class);
-            startActivity(intent);
-            finish();
-        });
-        ;
-
     }
 }

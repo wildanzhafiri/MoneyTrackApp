@@ -2,6 +2,7 @@ package com.example.moneytrackapp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
@@ -12,8 +13,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 public class SettingsActivity extends AppCompatActivity {
-    private Button backButton;
-    private ImageView dropdownCategories;
+    private Button editButton, logoutButton, backButton;
+    private ImageView dropdownCategories, dropdownCurrency, dropdownWishlist;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,17 +27,44 @@ public class SettingsActivity extends AppCompatActivity {
             return insets;
         });
 
+        editButton = findViewById(R.id.btn_edit_profile);
+        dropdownCategories = findViewById(R.id.dropdown_right_categories);
+        logoutButton = findViewById(R.id.btn_logout);
         backButton = findViewById(R.id.btn_go_back);
-        backButton.setOnClickListener(view -> {
+        dropdownWishlist = findViewById(R.id.dropdown_right_wishlist);
+        dropdownCurrency = findViewById(R.id.dropdown_right_currency);
+
+        editButton.setOnClickListener(view -> {
             Intent intent = new Intent(SettingsActivity.this, ProfileActivity.class);
+            startActivity(intent);
+        });
+
+        dropdownCategories.setOnClickListener(view -> {
+            Intent intent = new Intent(SettingsActivity.this, ManageCategory.class);
+            startActivity(intent);
+        });
+
+
+//        dropdownWishlist.setOnClickListener(view -> {
+//            Intent intent = new Intent(SettingsActivity.this, WishlistActivity.class);
+//            startActivity(intent);
+//        });
+//
+//        dropdownCurrency.setOnClickListener(view -> {
+//            Intent intent = new Intent(SettingsActivity.this, CurrencyActivity.class);
+//            startActivity(intent);
+//        });
+
+        logoutButton.setOnClickListener(view -> {
+            Intent intent = new Intent(SettingsActivity.this, WelcomeActivity.class);
             startActivity(intent);
             finish();
         });
 
-        dropdownCategories = findViewById(R.id.dropdown_right_categories);
-        dropdownCategories.setOnClickListener(view -> {
-            Intent intent = new Intent(SettingsActivity.this, ManageCategory.class);
+        backButton.setOnClickListener(view -> {
+            Intent intent = new Intent(SettingsActivity.this, DashboardActivity.class);
             startActivity(intent);
+            finish();
         });
 
     }
