@@ -1,65 +1,71 @@
 package com.example.moneytrackapp;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
+import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.List;
 
 public class CurrencyAdapter extends RecyclerView.Adapter<CurrencyAdapter.ViewHolder> {
+    List<Currency> currencies;
+    Context context;
+    int selectedPosition = -1;
 
-    private final List<Currency> currencies;
-    private final OnCheckboxClickListener listener;
-
-    public interface OnCheckboxClickListener {
-        void onCheckboxClick(int position, boolean isChecked);
-    }
-
-    public CurrencyAdapter(List<Currency> currencies, OnCheckboxClickListener listener) {
+    public CurrencyAdapter(List<Currency> currencies, Context context) {
         this.currencies = currencies;
-        this.listener = listener;
+        this.context = context;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_currency, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_currency, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Currency currency = currencies.get(position);
-        holder.bind(currency, position);
+        holder.tvCurrencyName.setText(currency.getName());
+
+        holder.rbCurrency.setChecked(position == selectedPosition);
+
+        holder.rbCurrency.setOnClickListener(v -> {
+            selectedPosition = holder.getAdapterPosition();
+            notifyDataSetChanged();
+
+            // Tampilkan toast langsung saat klik
+            Toast.makeText(context, "Selected: " + currency.getName(), Toast.LENGTH_SHORT).show();
+        });
     }
 
     @Override
     public int getItemCount() {
-        return currencies.size();
+        return currencies.size(); // penting!
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        private final CheckBox cbCurrency;
-        private final TextView tvCurrencyName;
+    public Currency getSelectedCurrency() {
+        if (selectedPosition != -1) {
+            return currencies.get(selectedPosition);
+        }
+        return null;
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        RadioButton rbCurrency;
+        TextView tvCurrencyName;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            cbCurrency = itemView.findViewById(R.id.cbCurrency);
+            rbCurrency = itemView.findViewById(R.id.rbCurrency);
             tvCurrencyName = itemView.findViewById(R.id.tvCurrencyName);
-        }
-
-        public void bind(Currency currency, int position) {
-            tvCurrencyName.setText(currency.getName());
-            cbCurrency.setChecked(currency.isChecked());
-            cbCurrency.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                if (listener != null) {
-                    listener.onCheckboxClick(position, isChecked);
-                }
-            });
         }
     }
 }

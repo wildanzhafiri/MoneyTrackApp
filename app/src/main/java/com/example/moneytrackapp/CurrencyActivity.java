@@ -17,7 +17,7 @@ public class CurrencyActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_currency);
-        // Setup data
+
         List<Currency> currencies = new ArrayList<>();
         currencies.add(new Currency("United States Dollar (USD)"));
         currencies.add(new Currency("Euro (EUR)"));
@@ -26,14 +26,10 @@ public class CurrencyActivity extends AppCompatActivity {
         currencies.add(new Currency("Australian Dollar (AUD)"));
         currencies.add(new Currency("Indonesian Rupiah (IDR)"));
 
-        // Setup RecyclerView
-        RecyclerView rvCurrency = findViewById(R.id .rv_currency);
+        RecyclerView rvCurrency = findViewById(R.id.rv_currency);
         rvCurrency.setLayoutManager(new LinearLayoutManager(this));
 
-        CurrencyAdapter adapter = new CurrencyAdapter(currencies, (position, isChecked) -> {
-            currencies.get(position).setChecked(isChecked);
-        });
-
+        CurrencyAdapter adapter = new CurrencyAdapter(currencies, this); // kirim context
         rvCurrency.setAdapter(adapter);
     }
 }

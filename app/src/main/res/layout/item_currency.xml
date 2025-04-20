@@ -6,8 +6,8 @@
     android:layout_height="wrap_content"
     android:paddingVertical="12dp">
 
-    <CheckBox
-        android:id="@+id/cbCurrency"
+    <RadioButton
+        android:id="@+id/rbCurrency"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -20,9 +20,10 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:textSize="16sp"
+        android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/cbCurrency"
+        app:layout_constraintStart_toEndOf="@id/rbCurrency"
         app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
