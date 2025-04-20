@@ -6,6 +6,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.PopupMenu;
+import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
@@ -14,6 +15,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.moneytrackapp.adapter.WishlistAdapter;
 import com.example.moneytrackapp.model.WishlistItem;
 import com.example.moneytrackapp.viewmodel.WishlistViewModel;
+import java.util.ArrayList;
+import java.util.List;
 
 public class WishlistActivity extends AppCompatActivity {
     private static final int ADD_ITEM_REQUEST = 1;
@@ -31,15 +34,27 @@ public class WishlistActivity extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.wishlistRecyclerView);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        List<WishlistItem> dummyWishlist = new ArrayList<>();
+        dummyWishlist.add(new WishlistItem("New Laptop", 1299.99, "MacBook Pro with 16GB RAM", ""));
+        dummyWishlist.add(new WishlistItem("Gaming Console", 499.99, "PlayStation 5 with extra controller", ""));
+        dummyWishlist.add(new WishlistItem("Wireless Headphones", 199.99, "Noise cancelling with 30hr battery life", ""));
+        adapter.setItems(dummyWishlist);
         
         viewModel = new ViewModelProvider(this).get(WishlistViewModel.class);
         viewModel.getAllItems().observe(this, items -> {
-            adapter.setItems(items);
+            if (items == null || items.isEmpty()) {
+                adapter.setItems(dummyWishlist);
+            } else {
+                adapter.setItems(items);
+            }
         });
 
         adapter.setOnItemInteractionListener(new WishlistAdapter.OnItemInteractionListener() {
             @Override
             public void onItemClick(WishlistItem item) {
+                Toast.makeText(WishlistActivity.this, "Selected: " + item.getName(), Toast.LENGTH_SHORT).show();
+                
                 Intent intent = new Intent(WishlistActivity.this, EditWishlistItemActivity.class);
                 intent.putExtra(EditWishlistItemActivity.EXTRA_ID, item.getId());
                 intent.putExtra(EditWishlistItemActivity.EXTRA_NAME, item.getName());
