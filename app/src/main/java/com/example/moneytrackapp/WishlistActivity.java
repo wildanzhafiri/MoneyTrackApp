@@ -36,12 +36,10 @@ public class WishlistActivity extends AppCompatActivity {
         viewModel.getAllItems().observe(this, items -> {
             adapter.setItems(items);
         });
-        
-        // Set item interaction listeners
+
         adapter.setOnItemInteractionListener(new WishlistAdapter.OnItemInteractionListener() {
             @Override
             public void onItemClick(WishlistItem item) {
-                // Open EditWishlistItemActivity for editing
                 Intent intent = new Intent(WishlistActivity.this, EditWishlistItemActivity.class);
                 intent.putExtra(EditWishlistItemActivity.EXTRA_ID, item.getId());
                 intent.putExtra(EditWishlistItemActivity.EXTRA_NAME, item.getName());
@@ -53,7 +51,6 @@ public class WishlistActivity extends AppCompatActivity {
 
             @Override
             public void onItemLongClick(View itemView, WishlistItem item) {
-                // Show delete confirmation dialog
                 new AlertDialog.Builder(WishlistActivity.this)
                     .setTitle("Delete Item")
                     .setMessage("Are you sure you want to delete this item?")
@@ -64,8 +61,7 @@ public class WishlistActivity extends AppCompatActivity {
                     .show();
             }
         });
-        
-        // Replace FAB with normal button
+
         Button addButton = findViewById(R.id.btnAddWishlistItem);
         addButton.setOnClickListener(v -> {
             Intent intent = new Intent(WishlistActivity.this, EditWishlistItemActivity.class);
@@ -77,7 +73,6 @@ public class WishlistActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && data != null) {
-            // Check if this is a delete operation
             if (data.getBooleanExtra("DELETE", false) && requestCode == EDIT_ITEM_REQUEST) {
                 long id = data.getLongExtra(EditWishlistItemActivity.EXTRA_ID, -1);
                 if (id != -1) {
@@ -87,19 +82,16 @@ public class WishlistActivity extends AppCompatActivity {
                 }
                 return;
             }
-            
-            // Handle normal save operations
+
             String name = data.getStringExtra(EditWishlistItemActivity.EXTRA_NAME);
             double price = data.getDoubleExtra(EditWishlistItemActivity.EXTRA_PRICE, 0.0);
             String notes = data.getStringExtra(EditWishlistItemActivity.EXTRA_NOTES);
             String imageUri = data.getStringExtra(EditWishlistItemActivity.EXTRA_IMAGE_URI);
             
             if (requestCode == ADD_ITEM_REQUEST) {
-                // Create new item
                 WishlistItem newItem = new WishlistItem(name, price, notes, imageUri);
                 viewModel.insert(newItem);
             } else if (requestCode == EDIT_ITEM_REQUEST) {
-                // Update existing item
                 long id = data.getLongExtra(EditWishlistItemActivity.EXTRA_ID, -1);
                 if (id != -1) {
                     WishlistItem updatedItem = new WishlistItem(name, price, notes, imageUri);
