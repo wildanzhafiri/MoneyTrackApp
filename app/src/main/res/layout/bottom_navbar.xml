@@ -117,31 +117,6 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/nav_wishlist"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center">
-
-            <View
-                android:id="@+id/indicator_wishlist"
-                android:layout_width="50dp"
-                android:layout_height="8dp"
-                android:layout_marginBottom="4dp"
-                android:background="@drawable/bg_indikator"
-                android:visibility="gone" />
-
-            <ImageView
-                android:id="@+id/wishlist"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="10dp"
-                android:src="@drawable/ic_wishlist"
-                android:contentDescription="Wishlist" />
-        </LinearLayout>
-
-        <LinearLayout
             android:id="@+id/nav_setting"
             android:layout_width="0dp"
             android:layout_height="match_parent"
