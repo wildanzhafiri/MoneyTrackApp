@@ -15,8 +15,8 @@ import com.example.moneytrackapp.TransactionActivity;
 
 public class BottomNavbarView extends LinearLayout {
 
-    private ImageView iconHome, iconTransaction, iconAdd, iconBudget, iconSetting, iconWishlist;
-    private View indicatorHome, indicatorTransaction, indicatorAdd, indicatorCalculator, indicatorSetting, indicatorWishlist;
+    private ImageView iconHome, iconTransaction, iconAdd, iconBudget, iconSetting;
+    private View indicatorHome, indicatorTransaction, indicatorAdd, indicatorCalculator, indicatorSetting;
 
     public BottomNavbarView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -31,14 +31,12 @@ public class BottomNavbarView extends LinearLayout {
         iconAdd = findViewById(R.id.add_transaction);
         iconBudget = findViewById(R.id.budgeting);
         iconSetting = findViewById(R.id.setting);
-        iconWishlist = findViewById(R.id.wishlist);
 
         indicatorHome = findViewById(R.id.indicator_home);
         indicatorTransaction = findViewById(R.id.indicator_transaction);
         indicatorAdd = findViewById(R.id.indicator_add_transaction);
         indicatorCalculator = findViewById(R.id.indicator_budgeting);
         indicatorSetting = findViewById(R.id.indicator_setting);
-        indicatorWishlist = findViewById(R.id.indicator_wishlist);
 
         iconHome.setOnClickListener(v -> {
             if (!(context instanceof DashboardActivity)) {
@@ -69,12 +67,6 @@ public class BottomNavbarView extends LinearLayout {
                 context.startActivity(new Intent(context, ProfileActivity.class));
             }
         });
-
-        iconWishlist.setOnClickListener(v -> {
-            if (!(context instanceof WishlistActivity)) {
-                context.startActivity(new Intent(context, WishlistActivity.class));
-            }
-        });
     }
 
     public void setActiveIcon(int id) {
@@ -95,9 +87,6 @@ public class BottomNavbarView extends LinearLayout {
         } else if (id == R.id.setting) {
             iconSetting.setColorFilter(Color.parseColor("#000878"));
             indicatorSetting.setVisibility(View.VISIBLE);
-        } else if (id == R.id.wishlist) {
-            iconWishlist.setColorFilter(Color.parseColor("#000878"));
-            indicatorWishlist.setVisibility(View.VISIBLE);
         }
     }
 
@@ -107,13 +96,11 @@ public class BottomNavbarView extends LinearLayout {
         iconAdd.setColorFilter(Color.WHITE);
         iconBudget.setColorFilter(Color.WHITE);
         iconSetting.setColorFilter(Color.WHITE);
-        iconWishlist.setColorFilter(Color.WHITE);
 
         indicatorHome.setVisibility(View.GONE);
         indicatorTransaction.setVisibility(View.GONE);
         indicatorAdd.setVisibility(View.GONE);
         indicatorCalculator.setVisibility(View.GONE);
         indicatorSetting.setVisibility(View.GONE);
-        indicatorWishlist.setVisibility(View.GONE);
     }
 }
