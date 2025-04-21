@@ -57,8 +57,15 @@
             android:name=".ForgotPasswordActivity"
             android:exported="false" />
         <activity
+            android:name=".DetailTransactionActivity"
+            android:exported="false" />
+        <activity
+            android:name=".EditTransactionActivity"
+            android:exported="false" />
+         <activity
             android:name=".ChangePasswordActivity"
             android:exported="false" />
+        <activity
         <activity
             android:name=".WelcomeActivity"
             android:exported="true">

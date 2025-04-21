@@ -10,6 +10,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 public class AddTransactionActivity extends AppCompatActivity {
 
     private Spinner spinner;
@@ -47,6 +51,23 @@ public class AddTransactionActivity extends AppCompatActivity {
         Button manageContinueButton = findViewById(R.id.btn_continue);
         manageContinueButton.setOnClickListener(v -> {
             Intent intent = new Intent(this, TransactionActivity.class);
+            EditText etAmount = findViewById(R.id.et_amount);
+            EditText etDesc = findViewById(R.id.et_description);
+            Spinner spinnerType = findViewById(R.id.spinner_type);
+
+            String category = etCategory.getText().toString();
+            String amount = "Rp " + etAmount.getText().toString();
+            String desc = etDesc.getText().toString();
+            String date = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(new Date());
+            String type = spinnerType.getSelectedItem().toString();
+
+            int colorResId = type.equals("Income") ?
+                    R.drawable.category_label_background_green :
+                    R.drawable.category_label_background;
+
+            Transaction newTransaction = new Transaction(category, amount, desc, date, colorResId);
+            TransactionRepository.addTransaction(newTransaction);
+
             startActivity(intent);
         });
 

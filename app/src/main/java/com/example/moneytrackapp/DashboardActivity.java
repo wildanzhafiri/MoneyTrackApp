@@ -20,14 +20,12 @@ public class DashboardActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
-        
-        // Get username from intent and set it to the greeting text
         String username = getIntent().getStringExtra("USERNAME");
         TextView usernameText = findViewById(R.id.username_text);
         if (username != null && !username.isEmpty()) {
             usernameText.setText(username);
         } else {
-            usernameText.setText("User"); // Default name if no username is provided
+            usernameText.setText("User");
         }
 
         BottomNavbarView bottomNav = findViewById(R.id.bottom_nav);
@@ -36,7 +34,7 @@ public class DashboardActivity extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.transactionRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        List<Transaction> allTransactions = TransactionActivity.getAllTransactions();
+        List<Transaction> allTransactions = TransactionRepository.getLatestTransactions(5);
 
         List<Transaction> latestTransactions = allTransactions.subList(0, Math.min(5, allTransactions.size()));
 
@@ -72,11 +70,21 @@ public class DashboardActivity extends AppCompatActivity {
             startActivity(intent);
         });
         
-        // Set up Wishlist button
         Button wishlistButton = findViewById(R.id.btn_open_wishlist);
         wishlistButton.setOnClickListener(v -> {
             Intent intent = new Intent(DashboardActivity.this, WishlistActivity.class);
             startActivity(intent);
         });
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1 && resultCode == RESULT_OK) {
+            if (data != null && data.getBooleanExtra("deleted", false)) {
+                recreate(); // ini paling simple: reload seluruh activity
+            }
+        }
+    }
+
 }
