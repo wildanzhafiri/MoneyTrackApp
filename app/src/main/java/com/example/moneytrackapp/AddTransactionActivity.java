@@ -2,12 +2,10 @@ package com.example.moneytrackapp;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.ArrayAdapter;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,6 +14,7 @@ public class AddTransactionActivity extends AppCompatActivity {
 
     private Spinner spinner;
     private RecyclerView categoryRecycler;
+    private CategoryGridAdapter categoryAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +31,7 @@ public class AddTransactionActivity extends AppCompatActivity {
         categoryRecycler = findViewById(R.id.categoryRecyclerView);
         categoryRecycler.setLayoutManager(new GridLayoutManager(this, 3));
 
-        CategoryGridAdapter categoryAdapter = new CategoryGridAdapter(this, CategoryData.getCategories());
+        categoryAdapter = new CategoryGridAdapter(this, CategoryData.getCategories());
         categoryRecycler.setAdapter(categoryAdapter);
 
         categoryAdapter.setOnCategoryClickListener(categoryName -> {
@@ -41,7 +40,7 @@ public class AddTransactionActivity extends AppCompatActivity {
 
         Button manageCategoryButton = findViewById(R.id.manage_category_button);
         manageCategoryButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this, ManageCategory.class);
+            Intent intent = new Intent(this, ManageCategoryActivity.class);
             startActivity(intent);
         });
 
@@ -53,5 +52,13 @@ public class AddTransactionActivity extends AppCompatActivity {
 
         BottomNavbarView bottomNav = findViewById(R.id.bottom_nav);
         bottomNav.setActiveIcon(R.id.add_transaction);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (categoryAdapter != null) {
+            categoryAdapter.notifyDataSetChanged();
+        }
     }
 }
