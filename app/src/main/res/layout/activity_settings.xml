@@ -197,7 +197,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- Logout Button -->
-    <com.google.android.material.button.MaterialButton
+    <Button
             android:id="@+id/btn_logout"
             android:layout_width="330dp"
             android:layout_height="50dp"
@@ -206,30 +206,25 @@
             android:textColor="@android:color/holo_red_dark"
             android:textStyle="bold"
             android:textSize="16sp"
-            app:cornerRadius="24dp"
-            app:strokeColor="@android:color/holo_red_dark"
-            app:strokeWidth="2dp"
-            android:backgroundTint="#F7F7FC"
+            android:background="@drawable/bg_button_logout"
             android:elevation="4dp"
             app:layout_constraintBottom_toTopOf="@+id/btn_go_back"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
 
-
-
-
     <!-- Go Back Button -->
     <Button
             android:id="@+id/btn_go_back"
-            android:layout_width="325dp"
-            android:layout_height="41dp"
+            android:layout_width="330dp"
+            android:layout_height="50dp"
             android:layout_marginStart="30dp"
             android:layout_marginEnd="30dp"
             android:layout_marginBottom="148dp"
-            android:background="@drawable/bg_goback"
+            android:background="@drawable/bg_goback_settings"
             android:elevation="7dp"
             android:text="GO Back"
+            android:textColor="@color/white"
             android:textStyle="bold"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
