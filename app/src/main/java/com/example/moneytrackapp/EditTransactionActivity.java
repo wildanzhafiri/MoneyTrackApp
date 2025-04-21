@@ -91,12 +91,6 @@ public class EditTransactionActivity extends AppCompatActivity {
             finish();
         });
 
-        Button btnManageCategory = findViewById(R.id.manage_category_button);
-        btnManageCategory.setOnClickListener(v -> {
-            Intent intent = new Intent(this, ManageCategoryActivity.class);
-            startActivity(intent);
-        });
-
         BottomNavbarView bottomNav = findViewById(R.id.bottom_nav);
         bottomNav.setActiveIcon(R.id.add_transaction);
     }
