@@ -24,15 +24,15 @@
 - Membuat desain tampilan aplikasi untuk bagian login, register, lupa password, ganti password
 
 **Bekti Yuda Adi Pratama** (235150700111047):
-- Budgeting View
-- Add Budgeting
-- Edit Budgeting
-- Delete Budgeting
+- Membuat fitur Budgeting untuk pengguna agar bisa memanajemen daftar anggaran sesuai keinginan
+- Membuat fitur Add Budgeting untuk pengguna agar bisa menambahkan daftar anggaran baru sesuai keinginan
+- Membuat fitur Edit Budgeting untuk pengguna agar bisa mengubah daftar anggaran sesuai keinginan
+- Membuat fitur Delete Budgeting untuk pengguna agar bisa menghapus daftar anggaran sesuai keinginan
 
 **Rafif Asrun Ramadhani** (235150701111046):
-- Tampilan Settings 
-- Edit Profile
-- Choose Language
+- Membuat tampilan Settings 
+- Menambah halaman Edit Profile untuk edit username dan phto profil
+- Membuat tampilan Choose Language untuk memilih bahasa yang mau dipakai
 
 # MoneyTrackApp
 
