@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Dark application theme. -->
-    <style name="Theme.MoneyTrackApp" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Theme.MoneyTrackApp" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">#f79a1e</item>
         <item name="colorPrimaryVariant">#d17f00</item>
