@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".DashboardActivity"
-    android:background="@android:color/white">
+    android:background="#F4F4FC">
 
     <ScrollView
         android:id="@+id/scroll_content"
@@ -28,7 +28,7 @@
             <LinearLayout
                 android:id="@+id/header_dashboard"
                 android:layout_width="match_parent"
-                android:layout_height="270dp"
+                android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:padding="30dp"
                 android:background="@drawable/bg_balance_header">
@@ -109,6 +109,18 @@
                         android:textSize="35sp"
                         android:textStyle="bold" />
                 </LinearLayout>
+                
+                <!-- Add button below balance card but still inside header -->
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_open_wishlist"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="16dp"
+                    android:text="View Wishlist"
+                    android:textColor="@android:color/white"
+                    android:textAllCaps="false"
+                    android:background="@drawable/bg_button_continue"
+                    android:elevation="2dp" />
             </LinearLayout>
 
             <LinearLayout

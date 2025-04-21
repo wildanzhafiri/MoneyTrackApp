@@ -32,17 +32,16 @@ public class LoginActivity extends AppCompatActivity {
                 String username = usernameInput.getText().toString();
                 String password = passwordInput.getText().toString();
 
-                // Untuk demo, hanya periksa apakah field kosong
                 if (username.isEmpty() || password.isEmpty()) {
                     Toast.makeText(LoginActivity.this, "Harap isi semua field", Toast.LENGTH_SHORT).show();
                 } else {
-                    // Di implementasi nyata, tambahkan autentikasi
+
                     Toast.makeText(LoginActivity.this, "Login berhasil", Toast.LENGTH_SHORT).show();
-                    // Navigate to dashboard and pass the username
+
                     Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
                     intent.putExtra("USERNAME", username);
                     startActivity(intent);
-                    finish(); // Close the login activity
+                    finish();
                 }
             }
         });

@@ -20,7 +20,6 @@ public class DashboardActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
-
         String username = getIntent().getStringExtra("USERNAME");
         TextView usernameText = findViewById(R.id.username_text);
         if (username != null && !username.isEmpty()) {
@@ -68,6 +67,12 @@ public class DashboardActivity extends AppCompatActivity {
         LinearLayout manageExpandExpense = findViewById(R.id.btn_expand_expense);
         manageExpandExpense.setOnClickListener(v -> {
             Intent intent = new Intent(this, TransactionActivity.class);
+            startActivity(intent);
+        });
+        
+        Button wishlistButton = findViewById(R.id.btn_open_wishlist);
+        wishlistButton.setOnClickListener(v -> {
+            Intent intent = new Intent(DashboardActivity.this, WishlistActivity.class);
             startActivity(intent);
         });
     }
