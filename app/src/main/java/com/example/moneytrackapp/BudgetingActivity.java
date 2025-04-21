@@ -1,18 +1,27 @@
 package com.example.moneytrackapp;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
+import android.widget.TextView;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class BudgetingActivity extends AppCompatActivity {
+
+    private RecyclerView recyclerView;
+    private BudgetAdapter adapter;
+    private List<BudgetModel> budgetList;
+
+    private Button btnToggleDropdown;
+    private LinearLayout layoutDropdown;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,14 +31,53 @@ public class BudgetingActivity extends AppCompatActivity {
         BottomNavbarView bottomNav = findViewById(R.id.bottom_nav);
         bottomNav.setActiveIcon(R.id.budgeting);
 
-        ImageButton btnPindah = findViewById(R.id.edit_budget1);
-        btnPindah.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Intent untuk pindah Activity
-                Intent intent = new Intent(BudgetingActivity.this, MainActivity.class);
-                startActivity(intent);
+        recyclerView = findViewById(R.id.budgetRecyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(adapter);
+
+        // Dummy
+        budgetList = new ArrayList<>();
+        budgetList.add(new BudgetModel("Entertainment", 50000000, 50, 25000000, 25000000));
+
+        adapter = new BudgetAdapter(this, budgetList);
+        recyclerView.setAdapter(adapter);
+
+        // Dropdown
+        btnToggleDropdown = findViewById(R.id.btn_budget_dropdown);
+        layoutDropdown = findViewById(R.id.layout_budget_dropdown);
+
+        btnToggleDropdown.setOnClickListener(v -> {
+            if (layoutDropdown.getVisibility() == View.VISIBLE) {
+                layoutDropdown.setVisibility(View.GONE);
+                btnToggleDropdown.setText("Add new budget ▼");
+            } else {
+                layoutDropdown.setVisibility(View.VISIBLE);
+                btnToggleDropdown.setText("Add new budget ▲");
             }
         });
+        setupDropdownListeners();
+    }
+
+    private void setupDropdownListeners() {
+        int[] textViewIds = {
+                R.id.text_gift, R.id.text_commute, R.id.text_laundry,
+                R.id.text_electronics, R.id.text_health, R.id.text_gym
+        };
+
+        String[] categoryNames = {"Gifts", "Commute", "Laundry", "Electronics", "Health", "Gym"};
+
+        for (int i = 0; i < textViewIds.length; i++) {
+            int index = i;
+            TextView categoryText = findViewById(textViewIds[i]);
+            categoryText.setOnClickListener(v -> {
+                BudgetModel newItem = new BudgetModel(categoryNames[index],0,0,0,0);
+                budgetList.add(newItem);
+                adapter.notifyItemInserted(budgetList.size() - 1);
+                layoutDropdown.setVisibility(View.GONE);
+                btnToggleDropdown.setText("Add new budget ▼");
+
+                Toast.makeText(this, "Kategori " + categoryNames[index] + " ditambahkan", Toast.LENGTH_SHORT).show();
+            });
+        }
     }
 }
