@@ -67,7 +67,7 @@ MoneyTrackApp is a comprehensive financial tracking solution designed to help us
 <img src="./screenshots/WishlistSS.png" alt="Wishlist" title="Wishlist Page" width="150" />
 
 ### Manage Category
-<img src="./screenshots/WishlistSS.png" alt="Manage Category" title="Manage Category Page" width="150" />
+<img src="./screenshots/ManageCategorySS.png" alt="Manage Category" title="Manage Category Page" width="150" />
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
