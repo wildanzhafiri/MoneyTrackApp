@@ -49,13 +49,13 @@ MoneyTrackApp is a comprehensive financial tracking solution designed to help us
 ## Screenshots
 
 ### Login Screen
-<img src="./screenshots/loginSS.png" alt="Login Screen" title="Login Screen of MoneyTrackApp" width="300" />
+<img src="./screenshots/loginSS.png" alt="Login Screen" title="Login Screen of MoneyTrackApp" width="50" />
 
 ### Dashboard
-<img src="./screenshots/DashboardSS.png" alt="Dashboard" title="Main Dashboard" width="300" />
+<img src="./screenshots/DashboardSS.png" alt="Dashboard" title="Main Dashboard" width="50" />
 
 ### Transaction History
-<img src="./screenshots/transactionHistorySS.png" alt="Transactions" title="Transaction History Page" width="300" />
+<img src="./screenshots/transactionHistorySS.png" alt="Transactions" title="Transaction History Page" width="50" />
 
 ### Transaction Detail
-<img src="./screenshots/DetailsTransactionSS.png" alt="TransactionsDetail" title="Transaction Detail Page" width="300" />
+<img src="./screenshots/DetailsTransactionSS.png" alt="TransactionsDetail" title="Transaction Detail Page" width="50" />
