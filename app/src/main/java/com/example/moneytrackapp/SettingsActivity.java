@@ -37,7 +37,7 @@ public class SettingsActivity extends AppCompatActivity {
         });
 
         dropdownCategories.setOnClickListener(view -> {
-            Intent intent = new Intent(SettingsActivity.this, ManageCategory.class);
+            Intent intent = new Intent(SettingsActivity.this, ManageCategoryActivity.class);
             startActivity(intent);
         });
 

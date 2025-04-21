@@ -12,4 +12,12 @@ public class Category {
 
     public String getName() { return name; }
     public int getIconRes() { return iconResId; }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setIconRes(int iconResId) {
+        this.iconResId = iconResId;
+    }
 }

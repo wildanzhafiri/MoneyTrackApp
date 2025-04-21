@@ -1,6 +1,5 @@
 package com.example.moneytrackapp;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,19 +13,18 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.Arrays;
 import java.util.List;
 
-public class EditCategoryActivity extends AppCompatActivity {
+public class AddCategoryActivity extends AppCompatActivity {
 
     private RecyclerView iconRecyclerView;
     private EditText nameInput;
     private ImageView selectedIcon;
     private IconGridAdapter adapter;
     private int selectedIconRes = -1;
-    private String initialCategoryName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit_category);
+        setContentView(R.layout.activity_add_category);
 
         BottomNavbarView bottomNav = findViewById(R.id.bottom_nav);
         bottomNav.setActiveIcon(R.id.add_transaction);
@@ -49,43 +47,22 @@ public class EditCategoryActivity extends AppCompatActivity {
         iconRecyclerView.setLayoutManager(new GridLayoutManager(this, 4));
         iconRecyclerView.setAdapter(adapter);
 
-        Intent intent = getIntent();
-        String mode = intent.getStringExtra("mode");
-        if ("edit".equals(mode)) {
-            initialCategoryName = intent.getStringExtra("category_name");
-            selectedIconRes = intent.getIntExtra("icon_res", -1);
-
-            nameInput.setText(initialCategoryName);
-            if (selectedIconRes != -1) {
-                selectedIcon.setImageResource(selectedIconRes);
-                adapter.setSelectedIcon(selectedIconRes);
-            }
-        }
-
         adapter.setOnIconClickListener(iconRes -> {
             selectedIconRes = iconRes;
             selectedIcon.setImageResource(iconRes);
         });
 
-        Button btnDone = findViewById(R.id.btn_done);
-        btnDone.setOnClickListener(v -> {
-            String newCategoryName = nameInput.getText().toString().trim();
+        Button btnAddCategory = findViewById(R.id.btn_add_category);
+        btnAddCategory.setOnClickListener(v -> {
+            String categoryName = nameInput.getText().toString().trim();
 
-            if (newCategoryName.isEmpty() || selectedIconRes == -1) {
+            if (categoryName.isEmpty() || selectedIconRes == -1) {
                 ToastUtils.showStaticToast(this, "Please fill all fields");
             } else {
-                CategoryData.updateCategory(initialCategoryName, newCategoryName, selectedIconRes);
-                ToastUtils.showStaticToast(this, "Category updated successfully!");
+                CategoryData.addCategory(new Category(categoryName, selectedIconRes));
+                ToastUtils.showStaticToast(this, "Category added successfully!");
                 finish();
             }
-        });
-
-
-        Button btnDelete = findViewById(R.id.btn_delete_category);
-        btnDelete.setOnClickListener(v -> {
-            CategoryData.deleteCategory(initialCategoryName);
-            ToastUtils.showStaticToast(this, "Category deleted successfully!");
-            finish();
         });
 
 
