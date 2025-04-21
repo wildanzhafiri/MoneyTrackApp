@@ -59,21 +59,13 @@
 
                 <!-- Category List -->
                 <LinearLayout
-                    android:id="@+id/layout_budget_dropdown"
-                    android:layout_width="315dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginStart="47dp"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:visibility="gone">
-
-                    <TextView android:id="@+id/text_gift" android:text="Gifts" style="@style/DropdownItem"/>
-                    <TextView android:id="@+id/text_commute" android:text="Commute" style="@style/DropdownItem"/>
-                    <TextView android:id="@+id/text_laundry" android:text="Laundry" style="@style/DropdownItem"/>
-                    <TextView android:id="@+id/text_electronics" android:text="Electronics" style="@style/DropdownItem"/>
-                    <TextView android:id="@+id/text_health" android:text="Health" style="@style/DropdownItem"/>
-                    <TextView android:id="@+id/text_gym" android:text="Gym" style="@style/DropdownItem"/>
-                </LinearLayout>
+                        android:id="@+id/layout_budget_dropdown"
+                        android:layout_width="315dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginStart="47dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone" />
             </LinearLayout>
         </ScrollView>
     </LinearLayout>
