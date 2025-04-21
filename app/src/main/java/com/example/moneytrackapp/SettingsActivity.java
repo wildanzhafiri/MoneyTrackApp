@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -15,6 +16,14 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+
+        String username = getIntent().getStringExtra("username_key");
+        TextView usernameText = findViewById(R.id.usernameView);
+        if (username != null && !username.isEmpty()) {
+            usernameText.setText(username);
+        } else {
+            usernameText.setText("User");
+        }
 
         // Initialize views
         imageProfile = findViewById(R.id.imageView);
@@ -41,10 +50,10 @@ public class SettingsActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-//        dropdownWishlist.setOnClickListener(view -> {
-//            Intent intent = new Intent(SettingsActivity.this, WishlistActivity.class);
-//            startActivity(intent);
-//        });
+        dropdownWishlist.setOnClickListener(view -> {
+            Intent intent = new Intent(SettingsActivity.this, WishlistActivity.class);
+            startActivity(intent);
+        });
 
         dropdownCurrency.setOnClickListener(view -> {
             Intent intent = new Intent(SettingsActivity.this, CurrencyActivity.class);
@@ -62,7 +71,5 @@ public class SettingsActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         });
-
     }
-
 }
