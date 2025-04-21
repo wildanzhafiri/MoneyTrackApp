@@ -2,43 +2,49 @@ package com.example.moneytrackapp;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
+import com.google.android.material.textfield.TextInputEditText;
+
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+
+import java.util.Objects;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ProfileActivity extends AppCompatActivity {
-    protected Button settingsButton, logoutButton;
+
+    CircleImageView imageProfile;
+    TextView uploadText;
+    TextInputEditText editUsername;
+    Button saveButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_profile);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
 
-        settingsButton = findViewById(R.id.btn_settings);
-        logoutButton = findViewById(R.id.btn_logout);
+        uploadText = findViewById(R.id.upload_text);
+        editUsername = findViewById(R.id.username_input);
+        saveButton = findViewById(R.id.btn_save_profile);
 
-        settingsButton.setOnClickListener(view -> {
+        //  Event when save button is clicked
+        saveButton.setOnClickListener(view -> {
+            String username = Objects.requireNonNull(editUsername.getText()).toString().trim();
+            Toast.makeText(ProfileActivity.this, "Saved: " + username, Toast.LENGTH_SHORT).show();
+
+            // send username to SettingsActivity
             Intent intent = new Intent(ProfileActivity.this, SettingsActivity.class);
+            intent.putExtra("username_key", username);
             startActivity(intent);
         });
 
-        logoutButton.setOnClickListener(view -> {
-            Intent intent = new Intent(ProfileActivity.this, WelcomeActivity.class);
-            startActivity(intent);
-            finish();
-        });
-        ;
+        // Event when upload text is clicked
+        uploadText.setOnClickListener(view -> Toast.makeText(ProfileActivity.this, "Upload profile photo (not set yet)", Toast.LENGTH_SHORT).show());
 
+        // Event when image profile is clicked
+        imageProfile.setOnClickListener(view -> Toast.makeText(ProfileActivity.this, "Upload profile photo (not set yet)", Toast.LENGTH_SHORT).show());
     }
 }
