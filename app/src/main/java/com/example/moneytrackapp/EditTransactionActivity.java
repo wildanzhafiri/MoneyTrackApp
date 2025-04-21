@@ -93,7 +93,7 @@ public class EditTransactionActivity extends AppCompatActivity {
 
         Button btnManageCategory = findViewById(R.id.manage_category_button);
         btnManageCategory.setOnClickListener(v -> {
-            Intent intent = new Intent(this, ManageCategory.class);
+            Intent intent = new Intent(this, ManageCategoryActivity.class);
             startActivity(intent);
         });
 
