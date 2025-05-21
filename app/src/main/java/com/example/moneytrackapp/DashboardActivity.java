@@ -11,22 +11,30 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.List;
 
 public class DashboardActivity extends AppCompatActivity {
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
-        String username = getIntent().getStringExtra("USERNAME");
-        TextView usernameText = findViewById(R.id.username_text);
-        if (username != null && !username.isEmpty()) {
-            usernameText.setText(username);
-        } else {
-            usernameText.setText("User");
+
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser == null) {
+            startActivity(new Intent(DashboardActivity.this, LoginActivity.class));
+            finish();
+            return;
         }
+
+        TextView usernameText = findViewById(R.id.username_text);
+        String username = currentUser.getEmail();
+        usernameText.setText(username != null ? username : "User");
 
         BottomNavbarView bottomNav = findViewById(R.id.bottom_nav);
         bottomNav.setActiveIcon(R.id.home);

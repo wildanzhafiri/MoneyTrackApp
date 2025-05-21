@@ -6,6 +6,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -14,11 +16,14 @@ public class SignupActivity extends AppCompatActivity {
     private EditText emailInput, usernameInput, passwordInput, confirmPasswordInput;
     private Button signupButton;
 
+    private FirebaseAuth mAuth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
+        mAuth = FirebaseAuth.getInstance();
         emailInput = findViewById(R.id.emailInput);
         usernameInput = findViewById(R.id.usernameInput);
         passwordInput = findViewById(R.id.passwordInput);
@@ -29,25 +34,29 @@ public class SignupActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String email = emailInput.getText().toString();
-                String username = usernameInput.getText().toString();
+                String username = usernameInput.getText().toString(); // username bisa disimpan nanti di profile
                 String password = passwordInput.getText().toString();
                 String confirmPassword = confirmPasswordInput.getText().toString();
 
-                // Validasi sederhana untuk demo
                 if (email.isEmpty() || username.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
                     Toast.makeText(SignupActivity.this, "Harap isi semua field", Toast.LENGTH_SHORT).show();
                 } else if (!password.equals(confirmPassword)) {
                     Toast.makeText(SignupActivity.this, "Password tidak cocok", Toast.LENGTH_SHORT).show();
                 } else {
-                    // Di implementasi nyata, tambahkan registrasi ke database
-                    Toast.makeText(SignupActivity.this, "Registrasi berhasil", Toast.LENGTH_SHORT).show();
-                    
-                    // Kembali ke halaman login setelah registrasi berhasil
-                    Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
-                    startActivity(intent);
-                    finish(); // Tutup activity ini agar tidak kembali ke form registrasi saat tekan back
+                    mAuth.createUserWithEmailAndPassword(email, password)
+                            .addOnCompleteListener(task -> {
+                                if (task.isSuccessful()) {
+                                    FirebaseUser user = mAuth.getCurrentUser();
+                                    Toast.makeText(SignupActivity.this, "Registrasi berhasil", Toast.LENGTH_SHORT).show();
+                                    startActivity(new Intent(SignupActivity.this, LoginActivity.class));
+                                    finish();
+                                } else {
+                                    Toast.makeText(SignupActivity.this, "Registrasi gagal: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            });
                 }
             }
         });
+
     }
 } 
