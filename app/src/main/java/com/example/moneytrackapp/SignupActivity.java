@@ -8,6 +8,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -46,10 +48,20 @@ public class SignupActivity extends AppCompatActivity {
                     mAuth.createUserWithEmailAndPassword(email, password)
                             .addOnCompleteListener(task -> {
                                 if (task.isSuccessful()) {
-                                    FirebaseUser user = mAuth.getCurrentUser();
-                                    Toast.makeText(SignupActivity.this, "Registrasi berhasil", Toast.LENGTH_SHORT).show();
-                                    startActivity(new Intent(SignupActivity.this, LoginActivity.class));
-                                    finish();
+                                    FirebaseUser firebaseUser = mAuth.getCurrentUser();
+                                    DatabaseReference databaseRef = FirebaseDatabase.getInstance("https://moneytrackapp-56fdd-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference("users");
+                                    User user = new User(username, email); // class User adalah POJO untuk user
+                                    databaseRef.child(firebaseUser.getUid()).setValue(user)
+                                            .addOnCompleteListener(task2 -> {
+                                                if (task2.isSuccessful()) {
+                                                    Toast.makeText(SignupActivity.this, "Registrasi berhasil", Toast.LENGTH_SHORT).show();
+                                                    startActivity(new Intent(SignupActivity.this, LoginActivity.class));
+                                                    finish();
+                                                } else {
+                                                    Toast.makeText(SignupActivity.this, "Gagal simpan user ke database", Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+
                                 } else {
                                     Toast.makeText(SignupActivity.this, "Registrasi gagal: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                                 }

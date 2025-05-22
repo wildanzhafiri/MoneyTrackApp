@@ -13,6 +13,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 
@@ -33,8 +38,27 @@ public class DashboardActivity extends AppCompatActivity {
         }
 
         TextView usernameText = findViewById(R.id.username_text);
-        String username = currentUser.getEmail();
-        usernameText.setText(username != null ? username : "User");
+        DatabaseReference ref = FirebaseDatabase.getInstance("https://moneytrackapp-56fdd-default-rtdb.asia-southeast1.firebasedatabase.app/")
+                .getReference("users")
+                .child(currentUser.getUid());
+
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    String username = snapshot.child("username").getValue(String.class);
+                    usernameText.setText(username != null ? username : "User");
+                } else {
+                    usernameText.setText("User");
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                usernameText.setText("User");
+            }
+        });
+
 
         BottomNavbarView bottomNav = findViewById(R.id.bottom_nav);
         bottomNav.setActiveIcon(R.id.home);
