@@ -34,6 +34,10 @@ public class DashboardActivity extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.transactionRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        if (TransactionRepository.getAllTransactions().isEmpty()) {
+            TransactionRepository.dummyTransaction();
+        }
+
         List<Transaction> allTransactions = TransactionRepository.getLatestTransactions(5);
 
         List<Transaction> latestTransactions = allTransactions.subList(0, Math.min(5, allTransactions.size()));

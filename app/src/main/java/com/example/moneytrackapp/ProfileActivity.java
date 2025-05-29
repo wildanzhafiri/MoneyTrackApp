@@ -26,6 +26,7 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
+        imageProfile = findViewById(R.id.profile_image);
         uploadText = findViewById(R.id.upload_text);
         editUsername = findViewById(R.id.username_input);
         saveButton = findViewById(R.id.btn_save_profile);

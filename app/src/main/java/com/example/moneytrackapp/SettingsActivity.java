@@ -33,6 +33,16 @@ public class SettingsActivity extends AppCompatActivity {
         backButton = findViewById(R.id.btn_go_back);
         dropdownWishlist = findViewById(R.id.dropdown_right_wishlist);
         dropdownCurrency = findViewById(R.id.dropdown_right_currency);
+        TextView usernameView = findViewById(R.id.usernameView);
+
+        // Ambil data username dari intent
+        Intent usernameIntent = getIntent();
+        if (usernameIntent != null && usernameIntent.hasExtra("username_key")) {
+            String username = usernameIntent.getStringExtra("username_key");
+            if (username != null && !username.isEmpty()) {
+                usernameView.setText(username);
+            }
+        }
 
         // Set click listeners for views
         imageProfile.setOnClickListener(view -> {

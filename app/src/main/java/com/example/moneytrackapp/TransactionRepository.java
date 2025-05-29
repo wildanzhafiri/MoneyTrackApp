@@ -30,6 +30,13 @@ public class TransactionRepository {
         }
     }
 
+    public static void dummyTransaction() {
+        Transaction transaction = new Transaction("Makan", "Rp 20.000", "Ayam Ungkep Reguler", "27/01/2025", R.drawable.category_label_background);
+        Transaction transaction2 = new Transaction("Transfer", "Rp 100.000", "Sangu dari mamah", "26/01/2025", R.drawable.category_label_background_green);
+
+        TransactionRepository.addTransaction(transaction);
+        TransactionRepository.addTransaction(transaction2);
+    }
 
     public static void clearTransactions() {
         transactions.clear();

@@ -2,6 +2,7 @@ package com.example.moneytrackapp;
 
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.LinearLayout;
@@ -59,25 +60,39 @@ public class BudgetingActivity extends AppCompatActivity {
     }
 
     private void setupDropdownListeners() {
-        int[] textViewIds = {
-                R.id.text_gift, R.id.text_commute, R.id.text_laundry,
-                R.id.text_electronics, R.id.text_health, R.id.text_gym
-        };
+        layoutDropdown.removeAllViews(); // Bersihkan dulu
 
-        String[] categoryNames = {"Gifts", "Commute", "Laundry", "Electronics", "Health", "Gym"};
+        List<Category> categories = CategoryData.getCategories();
 
-        for (int i = 0; i < textViewIds.length; i++) {
-            int index = i;
-            TextView categoryText = findViewById(textViewIds[i]);
-            categoryText.setOnClickListener(v -> {
-                BudgetModel newItem = new BudgetModel(categoryNames[index],0,0,0,0);
+        for (Category category : categories) {
+            TextView textView = new TextView(this);
+            textView.setText(category.getName());
+            textView.setTextSize(16f);
+            textView.setTextColor(getResources().getColor(android.R.color.black));
+            textView.setPadding(32, 24, 32, 24); // padding atas-bawah, kanan-kiri
+            textView.setBackgroundResource(R.drawable.bg_dropdown_item); // gunakan drawable putih
+            textView.setClickable(true);
+            textView.setFocusable(true);
+
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+            );
+            params.setMargins(0, 8, 0, 8); // spasi antar item
+            textView.setLayoutParams(params);
+
+            textView.setOnClickListener(v -> {
+                BudgetModel newItem = new BudgetModel(category.getName(), 0, 0, 0, 0);
                 budgetList.add(newItem);
                 adapter.notifyItemInserted(budgetList.size() - 1);
                 layoutDropdown.setVisibility(View.GONE);
                 btnToggleDropdown.setText("Add new budget ▼");
-
-                Toast.makeText(this, "Kategori " + categoryNames[index] + " ditambahkan", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Kategori " + category.getName() + " ditambahkan", Toast.LENGTH_SHORT).show();
             });
+
+            layoutDropdown.addView(textView);
         }
     }
+
+
 }
