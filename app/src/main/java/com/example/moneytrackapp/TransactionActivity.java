@@ -14,10 +14,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,7 +75,37 @@ public class TransactionActivity extends AppCompatActivity {
 
         paginationContainer = findViewById(R.id.paginationContainer);
 
-        allTransactions = TransactionRepository.getAllTransactions();
+        FirebaseDatabase.getInstance("https://tugasakhir-aca04-default-rtdb.asia-southeast1.firebasedatabase.app")
+                .getReference("transactions")
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        allTransactions.clear();
+                        for (DataSnapshot snap : snapshot.getChildren()) {
+                            TransactionFirebase t = snap.getValue(TransactionFirebase.class);
+                            if (t != null) {
+                                allTransactions.add(new Transaction(
+                                        snap.getKey(),
+                                        t.category,
+                                        t.amount,
+                                        t.description,
+                                        t.date,
+                                        t.colorResId,
+                                        t.imageBase64
+                                ));
+                            }
+                        }
+                        setupPagination();
+                        loadTransactionsForPage(1);
+                    }
+
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Toast.makeText(TransactionActivity.this, "Failed to load transactions", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
 
         setupPagination();
         loadTransactionsForPage(1);
