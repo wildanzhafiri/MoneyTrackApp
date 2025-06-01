@@ -42,11 +42,6 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(activity, DetailTransactionActivity.class);
             intent.putExtra("transactionId", t.id);
-            intent.putExtra("date", t.date);
-            intent.putExtra("amount", t.amount);
-            intent.putExtra("category", t.category);
-            intent.putExtra("description", t.description);
-            intent.putExtra("imageBase64", t.imageBase64);
             activity.startActivityForResult(intent, 1);
         });
     }

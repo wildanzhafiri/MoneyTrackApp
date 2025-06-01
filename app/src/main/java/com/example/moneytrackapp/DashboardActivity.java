@@ -2,7 +2,6 @@ package com.example.moneytrackapp;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -13,16 +12,12 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.ValueEventListener;
-
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
@@ -51,19 +46,15 @@ public class DashboardActivity extends AppCompatActivity {
         }
 
         TextView usernameText = findViewById(R.id.username_text);
-        DatabaseReference ref = FirebaseDatabase.getInstance("https://moneytrackapp-56fdd-default-rtdb.asia-southeast1.firebasedatabase.app/")
+        DatabaseReference userRef = FirebaseDatabase.getInstance("https://moneytrackapp-56fdd-default-rtdb.asia-southeast1.firebasedatabase.app/")
                 .getReference("users")
                 .child(currentUser.getUid());
 
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    String username = snapshot.child("username").getValue(String.class);
-                    usernameText.setText(username != null ? username : "User");
-                } else {
-                    usernameText.setText("User");
-                }
+                String username = snapshot.child("username").getValue(String.class);
+                usernameText.setText(username != null ? username : "User");
             }
 
             @Override
@@ -72,90 +63,80 @@ public class DashboardActivity extends AppCompatActivity {
             }
         });
 
-
         BottomNavbarView bottomNav = findViewById(R.id.bottom_nav);
         bottomNav.setActiveIcon(R.id.home);
 
         recyclerView = findViewById(R.id.transactionRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        FirebaseDatabase.getInstance("https://tugasakhir-aca04-default-rtdb.asia-southeast1.firebasedatabase.app")
-                .getReference("transactions")
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        allTransactions.clear();
-                        for (DataSnapshot snap : snapshot.getChildren()) {
-                            TransactionFirebase t = snap.getValue(TransactionFirebase.class);
-                            if (t != null) {
+        // 🔁 Ambil transaksi milik user yang login
+        DatabaseReference transactionsRef = FirebaseDatabase.getInstance("https://moneytrackapp-56fdd-default-rtdb.asia-southeast1.firebasedatabase.app/")
+                .getReference("users")
+                .child(currentUser.getUid())
+                .child("transactions");
 
-                                allTransactions.add(new Transaction(
-                                        snap.getKey(),
-                                        t.category,
-                                        t.amount,
-                                        t.description,
-                                        t.date,
-                                        t.colorResId,
-                                        t.imageBase64
-                                ));
-                            }
-                        }
-
-                        // Urutkan agar yang terbaru ada di atas (jika ada field waktu lebih baik pakai itu)
-                        Collections.reverse(allTransactions);
-
-                        List<Transaction> latest = allTransactions.subList(0, Math.min(3, allTransactions.size()));
-
-                        adapter = new TransactionAdapter(DashboardActivity.this, latest);
-                        recyclerView.setAdapter(adapter);
-
-                        // Resize tinggi RecyclerView
-                        int itemHeightDp = 120;
-                        float scale = getResources().getDisplayMetrics().density;
-                        int itemHeightPx = (int) (itemHeightDp * scale + 0.5f);
-                        recyclerView.getLayoutParams().height = itemHeightPx * latest.size();
-                        recyclerView.requestLayout();
+        transactionsRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                allTransactions.clear();
+                for (DataSnapshot snap : snapshot.getChildren()) {
+                    TransactionFirebase t = snap.getValue(TransactionFirebase.class);
+                    if (t != null) {
+                        allTransactions.add(new Transaction(
+                                snap.getKey(),
+                                t.category,
+                                t.amount,
+                                t.description,
+                                t.date,
+                                t.colorResId,
+                                t.imageBase64
+                        ));
                     }
+                }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        Toast.makeText(DashboardActivity.this, "Failed to load recent transactions", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                Collections.reverse(allTransactions); // urutkan dari terbaru
+                List<Transaction> latest = allTransactions.subList(0, Math.min(3, allTransactions.size()));
 
-        TextView seeAll = findViewById(R.id.btnAll);
-        seeAll.setOnClickListener(v -> {
-            Intent intent = new Intent(DashboardActivity.this, TransactionActivity.class);
-            startActivity(intent);
+                adapter = new TransactionAdapter(DashboardActivity.this, latest);
+                recyclerView.setAdapter(adapter);
+
+                // Sesuaikan tinggi RecyclerView
+                int itemHeightDp = 120;
+                float scale = getResources().getDisplayMetrics().density;
+                int itemHeightPx = (int) (itemHeightDp * scale + 0.5f);
+                recyclerView.getLayoutParams().height = itemHeightPx * latest.size();
+                recyclerView.requestLayout();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(DashboardActivity.this, "Failed to load transactions", Toast.LENGTH_SHORT).show();
+            }
         });
 
-        LinearLayout manageExpandIncome = findViewById(R.id.btn_expand_income);
-        manageExpandIncome.setOnClickListener(v -> {
-            Intent intent = new Intent(this, TransactionActivity.class);
-            startActivity(intent);
+        findViewById(R.id.btnAll).setOnClickListener(v -> {
+            startActivity(new Intent(DashboardActivity.this, TransactionActivity.class));
         });
 
-        LinearLayout manageExpandExpense = findViewById(R.id.btn_expand_expense);
-        manageExpandExpense.setOnClickListener(v -> {
-            Intent intent = new Intent(this, TransactionActivity.class);
-            startActivity(intent);
+        findViewById(R.id.btn_expand_income).setOnClickListener(v -> {
+            startActivity(new Intent(this, TransactionActivity.class));
+        });
+
+        findViewById(R.id.btn_expand_expense).setOnClickListener(v -> {
+            startActivity(new Intent(this, TransactionActivity.class));
         });
 
         Button wishlistButton = findViewById(R.id.btn_open_wishlist);
         wishlistButton.setOnClickListener(v -> {
-            Intent intent = new Intent(DashboardActivity.this, WishlistActivity.class);
-            startActivity(intent);
+            startActivity(new Intent(DashboardActivity.this, WishlistActivity.class));
         });
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1 && resultCode == RESULT_OK) {
-            if (data != null && data.getBooleanExtra("deleted", false)) {
-                recreate(); // refresh total
-            }
+        if (requestCode == 1 && resultCode == RESULT_OK && data != null && data.getBooleanExtra("deleted", false)) {
+            recreate(); // refresh tampilan
         }
     }
-
 }

@@ -13,6 +13,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -24,6 +26,7 @@ public class DetailTransactionActivity extends AppCompatActivity {
     private ImageView imagePreview;
     private Button editButton, deleteButton;
     private String transactionId;
+    private FirebaseUser currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +40,14 @@ public class DetailTransactionActivity extends AppCompatActivity {
         imagePreview = findViewById(R.id.imagePreview);
         editButton = findViewById(R.id.button);      // Tombol Edit
         deleteButton = findViewById(R.id.button2);   // Tombol Delete
+
+        // Ambil UID user login
+        currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null) {
+            Toast.makeText(this, "User not authenticated", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
 
         transactionId = getIntent().getStringExtra("transactionId");
         if (transactionId == null) {
@@ -54,8 +65,10 @@ public class DetailTransactionActivity extends AppCompatActivity {
 
         // Tombol Delete
         deleteButton.setOnClickListener(v -> {
-            FirebaseDatabase.getInstance("https://tugasakhir-aca04-default-rtdb.asia-southeast1.firebasedatabase.app")
-                    .getReference("transactions")
+            FirebaseDatabase.getInstance("https://moneytrackapp-56fdd-default-rtdb.asia-southeast1.firebasedatabase.app/")
+                    .getReference("users")
+                    .child(currentUser.getUid())
+                    .child("transactions")
                     .child(transactionId)
                     .removeValue()
                     .addOnSuccessListener(aVoid -> {
@@ -72,8 +85,10 @@ public class DetailTransactionActivity extends AppCompatActivity {
         });
 
         // Ambil data dari Firebase
-        FirebaseDatabase.getInstance("https://tugasakhir-aca04-default-rtdb.asia-southeast1.firebasedatabase.app")
-                .getReference("transactions")
+        FirebaseDatabase.getInstance("https://moneytrackapp-56fdd-default-rtdb.asia-southeast1.firebasedatabase.app/")
+                .getReference("users")
+                .child(currentUser.getUid())
+                .child("transactions")
                 .child(transactionId)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override

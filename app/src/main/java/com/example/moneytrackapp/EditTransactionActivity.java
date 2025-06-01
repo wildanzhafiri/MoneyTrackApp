@@ -1,4 +1,3 @@
-
 package com.example.moneytrackapp;
 
 import android.content.Intent;
@@ -21,6 +20,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -43,6 +44,8 @@ public class EditTransactionActivity extends AppCompatActivity {
     private String transactionId = null;
     private static final int IMAGE_PICK_CODE = 1001;
 
+    private FirebaseUser currentUser;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +56,13 @@ public class EditTransactionActivity extends AppCompatActivity {
         etDesc = findViewById(R.id.et_description);
         spinner = findViewById(R.id.spinner_type);
         ivPreview = findViewById(R.id.image_preview);
+
+        currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null) {
+            Toast.makeText(this, "User not authenticated", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
                 this, R.array.transaction_types, android.R.layout.simple_spinner_item);
@@ -72,8 +82,10 @@ public class EditTransactionActivity extends AppCompatActivity {
             return;
         }
 
-        DatabaseReference ref = FirebaseDatabase.getInstance("https://tugasakhir-aca04-default-rtdb.asia-southeast1.firebasedatabase.app")
-                .getReference("transactions")
+        DatabaseReference ref = FirebaseDatabase.getInstance("https://moneytrackapp-56fdd-default-rtdb.asia-southeast1.firebasedatabase.app/")
+                .getReference("users")
+                .child(currentUser.getUid())
+                .child("transactions")
                 .child(transactionId);
 
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -133,8 +145,10 @@ public class EditTransactionActivity extends AppCompatActivity {
                     newCategory, newAmount, newDesc, newDate, base64Image, colorResId
             );
 
-            FirebaseDatabase.getInstance("https://tugasakhir-aca04-default-rtdb.asia-southeast1.firebasedatabase.app")
-                    .getReference("transactions")
+            FirebaseDatabase.getInstance("https://moneytrackapp-56fdd-default-rtdb.asia-southeast1.firebasedatabase.app/")
+                    .getReference("users")
+                    .child(currentUser.getUid())
+                    .child("transactions")
                     .child(transactionId)
                     .setValue(updatedTransaction)
                     .addOnSuccessListener(aVoid -> {

@@ -1,4 +1,3 @@
-
 package com.example.moneytrackapp;
 
 import android.content.Intent;
@@ -15,11 +14,11 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import android.widget.ArrayAdapter;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -33,7 +32,6 @@ public class AddTransactionActivity extends AppCompatActivity {
 
     private Spinner spinner;
     private RecyclerView categoryRecycler;
-    private CategoryGridAdapter categoryAdapter;
     private String base64Image = null;
     private static final int IMAGE_PICK_CODE = 1000;
 
@@ -59,13 +57,9 @@ public class AddTransactionActivity extends AppCompatActivity {
         categoryRecycler = findViewById(R.id.categoryRecyclerView);
         categoryRecycler.setLayoutManager(new GridLayoutManager(this, 3));
         CategoryGridAdapter categoryAdapter = new CategoryGridAdapter(this, CategoryData.getCategories());
-
-        categoryAdapter = new CategoryGridAdapter(this, CategoryData.getCategories());
         categoryRecycler.setAdapter(categoryAdapter);
 
-        categoryAdapter.setOnCategoryClickListener(categoryName -> {
-            etCategory.setText(categoryName);
-        });
+        categoryAdapter.setOnCategoryClickListener(categoryName -> etCategory.setText(categoryName));
 
         Button btnUpload = findViewById(R.id.btn_upload_image);
         btnUpload.setOnClickListener(v -> {
@@ -75,7 +69,7 @@ public class AddTransactionActivity extends AppCompatActivity {
 
         Button btnManageCategory = findViewById(R.id.manage_category_button);
         btnManageCategory.setOnClickListener(v -> {
-            Intent intent = new Intent(this, ManageCategory.class);
+            Intent intent = new Intent(this, ManageCategoryActivity.class);
             startActivity(intent);
         });
 
@@ -91,9 +85,13 @@ public class AddTransactionActivity extends AppCompatActivity {
                     R.drawable.category_label_background_green :
                     R.drawable.category_label_background;
 
+            // ✅ Ambil UID user login
+            String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
             DatabaseReference dbRef = FirebaseDatabase
-                    .getInstance("https://tugasakhir-aca04-default-rtdb.asia-southeast1.firebasedatabase.app")
-                    .getReference("transactions");
+                    .getInstance("https://moneytrackapp-56fdd-default-rtdb.asia-southeast1.firebasedatabase.app/")
+                    .getReference("users")
+                    .child(uid)
+                    .child("transactions");
 
             String transactionId = dbRef.push().getKey();
 
