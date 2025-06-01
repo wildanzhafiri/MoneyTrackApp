@@ -6,7 +6,6 @@
     android:paddingVertical="10dp"
     android:gravity="center_vertical">
 
-    <!-- Ikon kategori dengan background bulat -->
     <ImageView
         android:id="@+id/category_icon"
         android:layout_width="50dp"
@@ -34,6 +33,7 @@
         android:textStyle="bold" />
 
     <ImageView
+        android:id="@+id/drag_handle"
         android:layout_width="25dp"
         android:layout_height="25dp"
         android:src="@drawable/ic_drag_handle" />

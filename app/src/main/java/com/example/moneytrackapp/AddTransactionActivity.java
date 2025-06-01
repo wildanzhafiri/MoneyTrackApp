@@ -15,6 +15,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import android.widget.ArrayAdapter;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -32,6 +33,7 @@ public class AddTransactionActivity extends AppCompatActivity {
 
     private Spinner spinner;
     private RecyclerView categoryRecycler;
+    private CategoryGridAdapter categoryAdapter;
     private String base64Image = null;
     private static final int IMAGE_PICK_CODE = 1000;
 
@@ -57,6 +59,8 @@ public class AddTransactionActivity extends AppCompatActivity {
         categoryRecycler = findViewById(R.id.categoryRecyclerView);
         categoryRecycler.setLayoutManager(new GridLayoutManager(this, 3));
         CategoryGridAdapter categoryAdapter = new CategoryGridAdapter(this, CategoryData.getCategories());
+
+        categoryAdapter = new CategoryGridAdapter(this, CategoryData.getCategories());
         categoryRecycler.setAdapter(categoryAdapter);
 
         categoryAdapter.setOnCategoryClickListener(categoryName -> {

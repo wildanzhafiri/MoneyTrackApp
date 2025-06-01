@@ -5,8 +5,8 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F7F7FF"
-    tools:context=".ManageCategory">
+    android:background="#F4F4FC"
+    tools:context=".ManageCategoryActivity">
 
     <RelativeLayout
         android:id="@+id/header"
@@ -62,7 +62,7 @@
 
         <Button
             android:id="@+id/btn_add_category"
-            android:layout_width="match_parent"
+            android:layout_width="320dp"
             android:layout_height="55dp"
             android:layout_marginBottom="20dp"
             android:background="@drawable/bg_button_continue"
@@ -73,7 +73,7 @@
 
     <Button
         android:id="@+id/btn_go_back"
-        android:layout_width="0dp"
+        android:layout_width="320dp"
         android:layout_height="55dp"
         android:layout_marginStart="30dp"
         android:layout_marginEnd="30dp"

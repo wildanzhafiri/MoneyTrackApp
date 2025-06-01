@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -12,6 +13,13 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -23,6 +31,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class DashboardActivity extends AppCompatActivity {
+    private FirebaseAuth mAuth;
 
     private RecyclerView recyclerView;
     private TransactionAdapter adapter;
@@ -33,13 +42,36 @@ public class DashboardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
 
-        String username = getIntent().getStringExtra("USERNAME");
-        TextView usernameText = findViewById(R.id.username_text);
-        if (username != null && !username.isEmpty()) {
-            usernameText.setText(username);
-        } else {
-            usernameText.setText("User");
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser == null) {
+            startActivity(new Intent(DashboardActivity.this, LoginActivity.class));
+            finish();
+            return;
         }
+
+        TextView usernameText = findViewById(R.id.username_text);
+        DatabaseReference ref = FirebaseDatabase.getInstance("https://moneytrackapp-56fdd-default-rtdb.asia-southeast1.firebasedatabase.app/")
+                .getReference("users")
+                .child(currentUser.getUid());
+
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    String username = snapshot.child("username").getValue(String.class);
+                    usernameText.setText(username != null ? username : "User");
+                } else {
+                    usernameText.setText("User");
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                usernameText.setText("User");
+            }
+        });
+
 
         BottomNavbarView bottomNav = findViewById(R.id.bottom_nav);
         bottomNav.setActiveIcon(R.id.home);
@@ -108,6 +140,12 @@ public class DashboardActivity extends AppCompatActivity {
             Intent intent = new Intent(this, TransactionActivity.class);
             startActivity(intent);
         });
+
+        Button wishlistButton = findViewById(R.id.btn_open_wishlist);
+        wishlistButton.setOnClickListener(v -> {
+            Intent intent = new Intent(DashboardActivity.this, WishlistActivity.class);
+            startActivity(intent);
+        });
     }
 
     @Override
@@ -119,4 +157,5 @@ public class DashboardActivity extends AppCompatActivity {
             }
         }
     }
+
 }

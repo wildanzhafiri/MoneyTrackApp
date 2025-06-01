@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.google.firebase.auth.FirebaseAuth;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -16,11 +17,14 @@ public class LoginActivity extends AppCompatActivity {
     private Button loginButton;
     private TextView forgotPasswordText;
 
+    private FirebaseAuth mAuth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        mAuth = FirebaseAuth.getInstance();
         usernameInput = findViewById(R.id.usernameInput);
         passwordInput = findViewById(R.id.passwordInput);
         loginButton = findViewById(R.id.loginButton);
@@ -29,20 +33,23 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String username = usernameInput.getText().toString();
+                String email = usernameInput.getText().toString(); // gunakan email untuk login
                 String password = passwordInput.getText().toString();
 
-                // Untuk demo, hanya periksa apakah field kosong
-                if (username.isEmpty() || password.isEmpty()) {
+                if (email.isEmpty() || password.isEmpty()) {
                     Toast.makeText(LoginActivity.this, "Harap isi semua field", Toast.LENGTH_SHORT).show();
                 } else {
-                    // Di implementasi nyata, tambahkan autentikasi
-                    Toast.makeText(LoginActivity.this, "Login berhasil", Toast.LENGTH_SHORT).show();
-                    // Navigate to dashboard and pass the username
-                    Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
-                    intent.putExtra("USERNAME", username);
-                    startActivity(intent);
-                    finish(); // Close the login activity
+                    mAuth.signInWithEmailAndPassword(email, password)
+                            .addOnCompleteListener(task -> {
+                                if (task.isSuccessful()) {
+                                    Toast.makeText(LoginActivity.this, "Login berhasil", Toast.LENGTH_SHORT).show();
+                                    Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
+                                    startActivity(intent);
+                                    finish();
+                                } else {
+                                    Toast.makeText(LoginActivity.this, "Login gagal: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            });
                 }
             }
         });
