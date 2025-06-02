@@ -36,10 +36,12 @@
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/imageView"
-        android:layout_width="96dp"
-        android:layout_height="90dp"
+        android:layout_width="85dp"
+        android:layout_height="85dp"
         android:layout_marginTop="36dp"
         android:src="@drawable/def_profile_img"
+        app:civ_border_color="#800080"
+        app:civ_border_width="2dp"
         android:contentDescription="@string/profile_picture"
         app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
         app:layout_constraintEnd_toEndOf="parent"
@@ -53,8 +55,8 @@
         android:id="@+id/tx_username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="13dp"
         android:text="@string/username"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -66,14 +68,14 @@
         android:id="@+id/usernameView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
+        android:layout_marginStart="15dp"
         android:text="@string/user"
         android:textColor="@color/black"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0."
         app:layout_constraintStart_toEndOf="@+id/imageView"
         app:layout_constraintTop_toBottomOf="@+id/tx_username"
         app:layout_constraintVertical_bias="0.0" />
@@ -88,7 +90,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/header"
-        app:layout_constraintVertical_bias="0.675">
+        app:layout_constraintVertical_bias="0.770">
 
         <!-- Edit Profile -->
         <ImageView
@@ -158,14 +160,14 @@
         <!-- Wishlist -->
         <ImageView
             android:id="@+id/ic_wishlist"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginStart="20dp"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_marginStart="22dp"
             android:layout_marginTop="20dp"
             android:layout_marginEnd="20dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/ic_categories"
-            app:srcCompat="@drawable/ic_wishlist_old" />
+            app:srcCompat="@drawable/ic_wishlist" />
 
         <TextView
             android:id="@+id/et_language"
@@ -197,7 +199,7 @@
             android:layout_marginTop="20dp"
             android:layout_marginEnd="20dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/ic_wishlist"
+            app:layout_constraintTop_toBottomOf="@id/ic_wallet"
             app:srcCompat="@drawable/ic_dollar" />
 
         <TextView
@@ -210,7 +212,6 @@
             app:layout_constraintEnd_toStartOf="@id/dropdown_right_currency"
             app:layout_constraintStart_toEndOf="@id/ic_currency"
             app:layout_constraintTop_toTopOf="@id/ic_currency" />
-
         <ImageView
             android:id="@+id/dropdown_right_currency"
             android:layout_width="24dp"
@@ -219,6 +220,38 @@
             android:layout_marginEnd="20dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/ic_currency"
+            app:srcCompat="@drawable/ic_keyboard_arrow_right" />
+
+
+        <!-- My Wallets -->
+        <ImageView
+            android:id="@+id/ic_wallet"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="20dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ic_wishlist"
+            app:srcCompat="@drawable/ic_wallet" />
+        <TextView
+            android:id="@+id/et_wallet"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/my_wallets"
+            android:textColor="#212121"
+            app:layout_constraintEnd_toStartOf="@id/dropdown_right_wallet"
+            app:layout_constraintStart_toEndOf="@id/ic_wallet"
+            app:layout_constraintTop_toTopOf="@id/ic_wallet" />
+        <ImageView
+            android:id="@+id/dropdown_right_wallet"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/ic_wallet"
             app:srcCompat="@drawable/ic_keyboard_arrow_right" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -231,10 +264,10 @@
             android:layout_marginEnd="40dp"
             android:layout_marginBottom="24dp"
             android:text="@string/log_out"
-            android:textColor="@android:color/holo_red_dark"
+            android:textColor="@color/white"
             android:textStyle="bold"
             android:textSize="16sp"
-            android:background="@drawable/bg_button_logout"
+            android:background="@drawable/rounded_red_button"
             android:elevation="4dp"
             app:layout_constraintBottom_toTopOf="@+id/btn_go_back"
             app:layout_constraintEnd_toEndOf="parent"
@@ -248,7 +281,7 @@
             android:layout_marginStart="40dp"
             android:layout_marginEnd="40dp"
             android:layout_marginBottom="120dp"
-            android:background="@drawable/bg_goback_settings"
+            android:background="@drawable/rounded_orange_button"
             android:elevation="7dp"
             android:text="@string/go_back"
             android:textColor="@color/white"

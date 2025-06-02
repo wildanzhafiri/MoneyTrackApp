@@ -23,8 +23,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class SettingsActivity extends AppCompatActivity {
     Button logoutButton, backButton;
-    ImageView imageProfile, dropdownEditProfile, dropdownCategories, dropdownCurrency, dropdownWishlist;
-    TextView usernameView, editProfile, manageCategories, myWishlist, chooseCurrency;
+    ImageView imageProfile, dropdownEditProfile, dropdownCategories, dropdownCurrency, dropdownWishlist, dropdownWallet;
+    TextView usernameView, editProfile, manageCategories, myWishlist, chooseCurrency, myWallets;
     private FirebaseAuth mAuth;
 
     @Override
@@ -40,10 +40,12 @@ public class SettingsActivity extends AppCompatActivity {
         editProfile = findViewById(R.id.et_);
         manageCategories = findViewById(R.id.et_categories);
         myWishlist = findViewById(R.id.et_language);
+        myWallets = findViewById(R.id.et_wallet);
         chooseCurrency = findViewById(R.id.et_currency);
         dropdownEditProfile = findViewById(R.id.dropdown_right_profile);
         dropdownCategories = findViewById(R.id.dropdown_right_categories);
         dropdownWishlist = findViewById(R.id.dropdown_right_wishlist);
+        dropdownWallet = findViewById(R.id.dropdown_right_wallet);
         dropdownCurrency = findViewById(R.id.dropdown_right_currency);
         logoutButton = findViewById(R.id.btn_logout);
         backButton = findViewById(R.id.btn_go_back);
@@ -65,6 +67,10 @@ public class SettingsActivity extends AppCompatActivity {
             Intent intent = new Intent(SettingsActivity.this, WishlistActivity.class);
             startActivity(intent);
         });
+        myWallets.setOnClickListener(view -> {
+            Intent intent = new Intent(SettingsActivity.this, WalletActivity.class);
+            startActivity(intent);
+        });
         chooseCurrency.setOnClickListener(view -> {
             Intent intent = new Intent(SettingsActivity.this, CurrencyActivity.class);
             startActivity(intent);
@@ -79,6 +85,10 @@ public class SettingsActivity extends AppCompatActivity {
         });
         dropdownWishlist.setOnClickListener(view -> {
             Intent intent = new Intent(SettingsActivity.this, WishlistActivity.class);
+            startActivity(intent);
+        });
+        dropdownWallet.setOnClickListener(view -> {
+            Intent intent = new Intent(SettingsActivity.this, WalletActivity.class);
             startActivity(intent);
         });
         dropdownCurrency.setOnClickListener(view -> {

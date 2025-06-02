@@ -1,13 +1,22 @@
 package com.example.moneytrackapp;
 
+import android.Manifest;
 import android.app.Activity;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Base64;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,7 +26,10 @@ import com.google.android.material.textfield.TextInputEditText;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat; // Tambahkan import ini
+import androidx.core.content.ContextCompat; // Tambahkan import ini
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -29,7 +41,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -37,10 +52,12 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ProfileActivity extends AppCompatActivity {
 
+    private static final int PERMISSION_REQUEST_CODE = 1001;
+
     CircleImageView imageProfile;
     TextView uploadText;
     TextInputEditText editUsername;
-    Button saveButton, deletePhotoButton;
+    Button saveButton, deletePhotoButton, downloadPhotoButton; // downloadPhotoButton sudah ada, tapi memastikan
 
     private FirebaseUser currentUser;
     private DatabaseReference userRef;
@@ -70,13 +87,13 @@ public class ProfileActivity extends AppCompatActivity {
         uploadText = findViewById(R.id.upload_text);
         editUsername = findViewById(R.id.username_input);
         saveButton = findViewById(R.id.btn_save_profile);
-        deletePhotoButton = findViewById(R.id.btn_delete_profile);
+        deletePhotoButton = findViewById(R.id.btn_delete_profile_picture);
+        downloadPhotoButton = findViewById(R.id.btn_download_profile_picture); // Pastikan ini diinisialisasi
 
         pickImageLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
                 selectedImageUri = result.getData().getData();
                 imageProfile.setImageURI(selectedImageUri); // Tampilkan di ImageView langsung
-                // PENTING: Unggah foto profil di sini (setelah memilih gambar)
                 uploadProfilePhoto();
             }
         });
@@ -86,17 +103,64 @@ public class ProfileActivity extends AppCompatActivity {
         saveButton.setOnClickListener(view -> saveUserProfile());
         uploadText.setOnClickListener(view -> openImageChooser());
         imageProfile.setOnClickListener(view -> openImageChooser());
-        deletePhotoButton.setOnClickListener(view -> deleteProfilePhoto());
+        deletePhotoButton.setOnClickListener(view -> deleteProfilePhoto()); // Tetap panggil dialog delete
+
+        // Tambahkan OnClickListener untuk tombol download
+        downloadPhotoButton.setOnClickListener(view -> {
+            // Periksa izin penyimpanan untuk versi Android yang berbeda
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                // Untuk Android 10 (API 29) dan di atasnya, tidak perlu WRITE_EXTERNAL_STORAGE
+                downloadProfilePhoto();
+            } else {
+                // Untuk Android 9 (API 28) dan di bawahnya, minta izin
+                if (ContextCompat.checkSelfPermission(ProfileActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(ProfileActivity.this,
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                            PERMISSION_REQUEST_CODE);
+                } else {
+                    downloadProfilePhoto();
+                }
+            }
+        });
     }
+
+    // Metode untuk menangani hasil permintaan izin
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                downloadProfilePhoto();
+            } else {
+                Toast.makeText(this, "Izin penyimpanan ditolak. Tidak dapat mengunduh foto.", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
 
     private void loadUserProfile() {
         if (currentUser.getDisplayName() != null && !currentUser.getDisplayName().isEmpty()) {
             editUsername.setText(currentUser.getDisplayName());
         } else {
             editUsername.setText("");
+            // memuat username dari database jika display name di Firebase Auth kosong
+            userRef.child("username").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    String dbUsername = snapshot.getValue(String.class);
+                    if (dbUsername != null && !dbUsername.isEmpty()) {
+                        editUsername.setText(dbUsername);
+                    }
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    // Log error for debugging
+                    // android.util.Log.e("ProfileActivity", "Failed to load username from DB: " + error.getMessage());
+                }
+            });
         }
 
-        // MEMUAT FOTO PROFIL DARI BASE64 DI REALTIME DATABASE
         userRef.child("profileImageBase64").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -110,6 +174,8 @@ public class ProfileActivity extends AppCompatActivity {
                     } else {
                         imageProfile.setImageResource(R.drawable.def_profile_img);
                         uploadText.setText(R.string.upload_profile_picture);
+                        // Log error for debugging
+                        // android.util.Log.e("ProfileActivity", "Failed to decode profile image Base64 during load.");
                     }
                 } else {
                     imageProfile.setImageResource(R.drawable.def_profile_img);
@@ -122,6 +188,8 @@ public class ProfileActivity extends AppCompatActivity {
                 Toast.makeText(ProfileActivity.this, "failed to load photo: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                 imageProfile.setImageResource(R.drawable.def_profile_img);
                 uploadText.setText(R.string.upload_profile_picture);
+                // Log error for debugging
+                // android.util.Log.e("ProfileActivity", "Firebase error loading profile image: " + error.getMessage(), error.toException());
             }
         });
     }
@@ -158,7 +226,6 @@ public class ProfileActivity extends AppCompatActivity {
         pickImageLauncher.launch(intent);
     }
 
-    // METODE UNTUK MENGUNGGAH FOTO PROFIL KE REALTIME DATABASE (sebagai Base64)
     private void uploadProfilePhoto() {
         if (selectedImageUri != null) {
             Toast.makeText(this, "uploading photo...", Toast.LENGTH_SHORT).show();
@@ -192,14 +259,32 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 
-    // METODE UNTUK MENGHAPUS FOTO PROFIL (Base64)
     private void deleteProfilePhoto() {
-        userRef.child("profileImageBase64").addListenerForSingleValueEvent(new ValueEventListener() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_delete_confirmation, null); // Inflate layout kustom
+        builder.setView(dialogView);
+
+        TextView dialogTitle = dialogView.findViewById(R.id.dialog_delete_title);
+        TextView dialogMessage = dialogView.findViewById(R.id.dialog_delete_message);
+        Button btnCancel = dialogView.findViewById(R.id.btn_delete_cancel);
+        Button btnConfirm = dialogView.findViewById(R.id.btn_delete_confirm);
+
+        // Set teks untuk dialog
+        dialogTitle.setText(getString(R.string.delete_confirmation_title));
+        dialogMessage.setText(R.string.delete_photo_message);
+
+        AlertDialog dialog = builder.create();
+
+        btnCancel.setOnClickListener(v -> dialog.dismiss());
+
+        btnConfirm.setOnClickListener(v -> userRef.child("profileImageBase64").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 String profileImageBase64 = snapshot.getValue(String.class);
                 if (profileImageBase64 == null || profileImageBase64.isEmpty()) {
-                    Toast.makeText(ProfileActivity.this, "no photo to delete", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ProfileActivity.this, "No photo to delete.", Toast.LENGTH_SHORT).show();
+                    dialog.dismiss(); // Tutup dialog bahkan jika tidak ada foto
                     return;
                 }
 
@@ -207,47 +292,124 @@ public class ProfileActivity extends AppCompatActivity {
                 HashMap<String, Object> userMap = new HashMap<>();
                 userMap.put("profileImageBase64", null); // Set ke null untuk menghapus field
                 userRef.updateChildren(userMap).addOnSuccessListener(aVoid -> {
-                    Toast.makeText(ProfileActivity.this, "photo deleted", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ProfileActivity.this, "Photo deleted successfully!", Toast.LENGTH_SHORT).show();
                     imageProfile.setImageResource(R.drawable.def_profile_img);
                     uploadText.setText(R.string.upload_profile_picture);
                     // Set photo URL di Firebase Auth menjadi null
                     UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setPhotoUri(null).build();
                     currentUser.updateProfile(profileUpdates);
                 }).addOnFailureListener(e -> Toast.makeText(ProfileActivity.this, "failed to delete photo: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                dialog.dismiss();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(ProfileActivity.this, "failed to load photo: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(ProfileActivity.this, "Failed to load photo: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                // android.util.Log.e("ProfileActivity", "Firebase error deleting profile image: " + error.getMessage(), error.toException());
+                dialog.dismiss();
+            }
+        }));
+        dialog.show();
+    }
+
+    // --- Metode untuk mengunduh foto profil ---
+    private void downloadProfilePhoto() {
+        userRef.child("profileImageBase64").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String profileImageBase64 = snapshot.getValue(String.class);
+                if (profileImageBase64 == null || profileImageBase64.isEmpty()) {
+                    Toast.makeText(ProfileActivity.this, "Tidak ada foto profil untuk diunduh.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                Bitmap bitmap = decodeBase64ToBitmap(profileImageBase64);
+                if (bitmap != null) {
+                    saveImageToGallery(bitmap);
+                } else {
+                    Toast.makeText(ProfileActivity.this, "Gagal mendekode foto profil.", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(ProfileActivity.this, "Gagal memuat data foto untuk diunduh: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e("ProfileActivity", "Firebase error downloading profile image: " + error.getMessage(), error.toException());
             }
         });
     }
 
+    // --- Metode untuk menyimpan gambar ke galeri ---
+    private void saveImageToGallery(Bitmap bitmap) {
+        OutputStream fos = null;
+        Uri imageUri = null;
+        String fileName = "profile_photo_" + System.currentTimeMillis() + ".jpg"; // Nama file unik
 
-    // --- Helper Methods untuk Konversi Base64 ---
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                // Untuk Android 10 (API 29) dan di atasnya (Scoped Storage)
+                ContentResolver resolver = getContentResolver();
+                ContentValues contentValues = new ContentValues();
+                contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, fileName);
+                contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg");
+                contentValues.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + File.separator + "MoneyTrackApp"); // Simpan di folder khusus
 
-    /**
-     * Mengkonversi Bitmap menjadi Base64 string.
-     *
-     * @param bitmap Bitmap yang akan dikonversi.
-     * @return String Base64 dari bitmap, atau null jika gagal.
-     */
+                imageUri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
+                if (imageUri == null) {
+                    throw new IOException("Failed to create new MediaStore record.");
+                }
+                fos = resolver.openOutputStream(imageUri);
+            } else {
+                // Untuk Android 9 (API 28) dan di bawahnya
+                File imagesDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES + File.separator + "MoneyTrackApp");
+                if (!imagesDir.exists()) {
+                    if (!imagesDir.mkdirs()) {
+                        throw new IOException("Failed to create directory: " + imagesDir.getAbsolutePath());
+                    }
+                }
+                File image = new File(imagesDir, fileName);
+                fos = new FileOutputStream(image);
+                imageUri = Uri.fromFile(image); // Dapatkan Uri dari File
+            }
+
+            if (fos != null) {
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 90, fos); // Kompres gambar
+                fos.flush();
+                Toast.makeText(this, "Foto berhasil diunduh ke Galeri!", Toast.LENGTH_LONG).show();
+                Log.d("ProfileActivity", "Image saved to: " + imageUri);
+            } else {
+                throw new IOException("Failed to get output stream.");
+            }
+        } catch (IOException e) {
+            Toast.makeText(this, "Gagal mengunduh foto: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            Log.e("ProfileActivity", "Error saving image to gallery: " + e.getMessage(), e);
+        } finally {
+            if (fos != null) {
+                try {
+                    fos.close();
+                } catch (IOException e) {
+                    Log.e("ProfileActivity", "Error closing output stream: " + e.getMessage(), e);
+                }
+            }
+            // Untuk Android 9 dan di bawahnya, perlu melakukan media scan agar gambar muncul di galeri
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q && imageUri != null) {
+                Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                mediaScanIntent.setData(imageUri);
+                sendBroadcast(mediaScanIntent);
+            }
+        }
+    }
+
+
     private String encodeBitmapToBase64(Bitmap bitmap) {
         if (bitmap == null) return null;
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        // Kompres gambar dengan format JPEG dan kualitas 70% (bisa disesuaikan)
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 70, byteArrayOutputStream);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
         byte[] byteArray = byteArrayOutputStream.toByteArray();
         return Base64.encodeToString(byteArray, Base64.DEFAULT);
     }
 
-    /**
-     * Mengkonversi Base64 string menjadi Bitmap.
-     *
-     * @param base64String String Base64 yang akan dikonversi.
-     * @return Bitmap dari string Base64, atau null jika gagal.
-     */
     private Bitmap decodeBase64ToBitmap(String base64String) {
         if (base64String == null || base64String.isEmpty()) return null;
 
