@@ -7,6 +7,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.moneytrackapp.adapter.CurrencyAdapter;
+import com.example.moneytrackapp.model.Currency;
+
 import java.util.ArrayList;
 import java.util.List;
 
