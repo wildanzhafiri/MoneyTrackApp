@@ -126,6 +126,7 @@
                     android:id="@+id/categoryRecyclerView"
                     android:layout_width="match_parent"
                     android:layout_height="260dp"
+                    android:paddingBottom="20dp"
                     android:minHeight="100dp"
                     android:nestedScrollingEnabled="false"
                     android:overScrollMode="ifContentScrolls"
