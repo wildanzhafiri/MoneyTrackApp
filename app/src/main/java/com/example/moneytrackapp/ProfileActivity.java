@@ -88,12 +88,12 @@ public class ProfileActivity extends AppCompatActivity {
         editUsername = findViewById(R.id.username_input);
         saveButton = findViewById(R.id.btn_save_profile);
         deletePhotoButton = findViewById(R.id.btn_delete_profile_picture);
-        downloadPhotoButton = findViewById(R.id.btn_download_profile_picture); // Pastikan ini diinisialisasi
+        downloadPhotoButton = findViewById(R.id.btn_download_profile_picture);
 
         pickImageLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
                 selectedImageUri = result.getData().getData();
-                imageProfile.setImageURI(selectedImageUri); // Tampilkan di ImageView langsung
+                imageProfile.setImageURI(selectedImageUri);
                 uploadProfilePhoto();
             }
         });
@@ -103,9 +103,8 @@ public class ProfileActivity extends AppCompatActivity {
         saveButton.setOnClickListener(view -> saveUserProfile());
         uploadText.setOnClickListener(view -> openImageChooser());
         imageProfile.setOnClickListener(view -> openImageChooser());
-        deletePhotoButton.setOnClickListener(view -> deleteProfilePhoto()); // Tetap panggil dialog delete
+        deletePhotoButton.setOnClickListener(view -> deleteProfilePhoto());
 
-        // Tambahkan OnClickListener untuk tombol download
         downloadPhotoButton.setOnClickListener(view -> {
             // Periksa izin penyimpanan untuk versi Android yang berbeda
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -125,7 +124,6 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
-    // Metode untuk menangani hasil permintaan izin
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -133,7 +131,7 @@ public class ProfileActivity extends AppCompatActivity {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 downloadProfilePhoto();
             } else {
-                Toast.makeText(this, "Izin penyimpanan ditolak. Tidak dapat mengunduh foto.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "storing permission denied. cannot download image.", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -185,7 +183,7 @@ public class ProfileActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(ProfileActivity.this, "failed to load photo: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(ProfileActivity.this, "failed to load image: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                 imageProfile.setImageResource(R.drawable.def_profile_img);
                 uploadText.setText(R.string.upload_profile_picture);
                 // Log error for debugging
@@ -228,7 +226,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void uploadProfilePhoto() {
         if (selectedImageUri != null) {
-            Toast.makeText(this, "uploading photo...", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Uploading image...", Toast.LENGTH_SHORT).show();
 
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);
@@ -240,22 +238,22 @@ public class ProfileActivity extends AppCompatActivity {
                     userMap.put("profileImageBase64", base64Image); // Simpan di field baru
 
                     userRef.updateChildren(userMap).addOnSuccessListener(aVoid -> {
-                        Toast.makeText(ProfileActivity.this, "photo updated", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ProfileActivity.this, "Profile picture updated", Toast.LENGTH_SHORT).show();
                         uploadText.setText(R.string.upload_profile_picture);
                         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setPhotoUri(null) // set null karena tidak ada URL
                                 .build();
                         currentUser.updateProfile(profileUpdates);
-                    }).addOnFailureListener(e -> Toast.makeText(ProfileActivity.this, "failed to update photo: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                    }).addOnFailureListener(e -> Toast.makeText(ProfileActivity.this, "Failed to update profile picture: " + e.getMessage(), Toast.LENGTH_SHORT).show());
                 } else {
-                    Toast.makeText(this, "failed to encode image to Base64", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Failed to encode image to Base64", Toast.LENGTH_SHORT).show();
                 }
 
             } catch (IOException e) {
                 e.printStackTrace();
-                Toast.makeText(this, "failed to load image: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Failed to load image: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         } else {
-            Toast.makeText(this, "no image selected", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "No image selected", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -283,7 +281,7 @@ public class ProfileActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 String profileImageBase64 = snapshot.getValue(String.class);
                 if (profileImageBase64 == null || profileImageBase64.isEmpty()) {
-                    Toast.makeText(ProfileActivity.this, "No photo to delete.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ProfileActivity.this, "No image to delete.", Toast.LENGTH_SHORT).show();
                     dialog.dismiss(); // Tutup dialog bahkan jika tidak ada foto
                     return;
                 }
@@ -298,13 +296,13 @@ public class ProfileActivity extends AppCompatActivity {
                     // Set photo URL di Firebase Auth menjadi null
                     UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setPhotoUri(null).build();
                     currentUser.updateProfile(profileUpdates);
-                }).addOnFailureListener(e -> Toast.makeText(ProfileActivity.this, "failed to delete photo: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                }).addOnFailureListener(e -> Toast.makeText(ProfileActivity.this, "Failed to delete image: " + e.getMessage(), Toast.LENGTH_SHORT).show());
                 dialog.dismiss();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(ProfileActivity.this, "Failed to load photo: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(ProfileActivity.this, "Failed to load image: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                 // android.util.Log.e("ProfileActivity", "Firebase error deleting profile image: " + error.getMessage(), error.toException());
                 dialog.dismiss();
             }
@@ -319,7 +317,7 @@ public class ProfileActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 String profileImageBase64 = snapshot.getValue(String.class);
                 if (profileImageBase64 == null || profileImageBase64.isEmpty()) {
-                    Toast.makeText(ProfileActivity.this, "Tidak ada foto profil untuk diunduh.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ProfileActivity.this, "No image to download.", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -327,13 +325,13 @@ public class ProfileActivity extends AppCompatActivity {
                 if (bitmap != null) {
                     saveImageToGallery(bitmap);
                 } else {
-                    Toast.makeText(ProfileActivity.this, "Gagal mendekode foto profil.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ProfileActivity.this, "Failed to decode image.", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(ProfileActivity.this, "Gagal memuat data foto untuk diunduh: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(ProfileActivity.this, "Failed to load image: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                 Log.e("ProfileActivity", "Firebase error downloading profile image: " + error.getMessage(), error.toException());
             }
         });
@@ -369,19 +367,19 @@ public class ProfileActivity extends AppCompatActivity {
                 }
                 File image = new File(imagesDir, fileName);
                 fos = new FileOutputStream(image);
-                imageUri = Uri.fromFile(image); // Dapatkan Uri dari File
+                imageUri = Uri.fromFile(image);
             }
 
             if (fos != null) {
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 90, fos); // Kompres gambar
                 fos.flush();
-                Toast.makeText(this, "Foto berhasil diunduh ke Galeri!", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Image saved to gallery", Toast.LENGTH_LONG).show();
                 Log.d("ProfileActivity", "Image saved to: " + imageUri);
             } else {
                 throw new IOException("Failed to get output stream.");
             }
         } catch (IOException e) {
-            Toast.makeText(this, "Gagal mengunduh foto: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Failed to save image to gallery: " + e.getMessage(), Toast.LENGTH_LONG).show();
             Log.e("ProfileActivity", "Error saving image to gallery: " + e.getMessage(), e);
         } finally {
             if (fos != null) {
