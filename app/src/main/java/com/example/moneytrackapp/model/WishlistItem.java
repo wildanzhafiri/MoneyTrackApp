@@ -1,60 +1,36 @@
 package com.example.moneytrackapp.model;
 
-import androidx.room.Entity;
-import androidx.room.PrimaryKey;
-import androidx.room.Ignore;
-import java.util.Objects;
-
-@Entity(tableName = "wishlist_items")
 public class WishlistItem {
-    @PrimaryKey(autoGenerate = true)
-    private long id;
+    private String id;
     private String name;
     private double price;
     private String notes;
-    private String imageUri;
+    private String imageBase64;
 
     public WishlistItem() {
+        // Required for Firebase
     }
 
-    @Ignore
-    public WishlistItem(String name, double price, String notes, String imageUri) {
+    public WishlistItem(String id, String name, double price, String notes, String imageBase64) {
+        this.id = id;
         this.name = name;
         this.price = price;
         this.notes = notes;
-        this.imageUri = imageUri;
+        this.imageBase64 = imageBase64;
     }
 
-    // Getters and setters
-    public long getId() { return id; }
-    public void setId(long id) { this.id = id; }
-    
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
+
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
-    
+
     public double getPrice() { return price; }
     public void setPrice(double price) { this.price = price; }
-    
+
     public String getNotes() { return notes; }
     public void setNotes(String notes) { this.notes = notes; }
-    
-    public String getImageUri() { return imageUri; }
-    public void setImageUri(String imageUri) { this.imageUri = imageUri; }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        WishlistItem that = (WishlistItem) o;
-        return id == that.id &&
-               Double.compare(that.price, price) == 0 &&
-               Objects.equals(name, that.name) &&
-               Objects.equals(notes, that.notes) &&
-               Objects.equals(imageUri, that.imageUri);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, price, notes, imageUri);
-    }
+    public String getImageBase64() { return imageBase64; }
+    public void setImageBase64(String imageBase64) { this.imageBase64 = imageBase64; }
 }
