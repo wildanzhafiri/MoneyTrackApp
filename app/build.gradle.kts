@@ -43,6 +43,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.firebase.database.v2030)
     implementation(libs.recyclerview)
     implementation(libs.appcompat)
     implementation(libs.material)
