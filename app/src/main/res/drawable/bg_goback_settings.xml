@@ -1,7 +1,0 @@
-<!-- res/drawable/bg_manage_category.xml -->
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
-        android:shape="rectangle">
-    <solid android:color="#FF9B31"/>
-    <corners android:radius="24dp"/>
-
-</shape>

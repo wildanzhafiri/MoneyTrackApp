@@ -13,24 +13,24 @@
         android:layout_height="75dp"
         android:background="#000878"
         android:padding="24dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintEnd_toEndOf="parent">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Choose Languange"
+            android:text="@string/choose_currency"
             android:textColor="@android:color/white"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:textSize="18sp"/>
 
         <ImageView
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_alignParentEnd="true"
-            android:contentDescription="Menu"
-            android:src="@drawable/ic_menu" />
+            android:src="@drawable/ic_menu"
+            android:contentDescription="@string/menu" />
     </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView

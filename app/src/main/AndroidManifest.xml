@@ -2,9 +2,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.moneytrackapp">
-  
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -13,10 +18,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MoneyTrackApp">
-
+        <activity
+            android:name=".WalletActivity"
+            android:exported="false" />
         <activity
             android:name=".EditWishlistItemActivity"
-            android:exported="false"/>
+            android:exported="false" />
         <activity
             android:name=".CurrencyActivity"
             android:exported="false" />
@@ -62,7 +69,7 @@
         <activity
             android:name=".EditTransactionActivity"
             android:exported="false" />
-         <activity
+        <activity
             android:name=".ChangePasswordActivity"
             android:exported="false" />
         <activity
@@ -78,4 +85,5 @@
             android:name=".WishlistActivity"
             android:exported="false" />
     </application>
+
 </manifest>

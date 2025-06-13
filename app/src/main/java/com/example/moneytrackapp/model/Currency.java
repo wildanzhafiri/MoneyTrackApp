@@ -1,4 +1,4 @@
-package com.example.moneytrackapp;
+package com.example.moneytrackapp.model;
 
 public class Currency {
     private final String name;

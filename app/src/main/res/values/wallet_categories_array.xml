@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="wallet_categories_array">
+        <item>E-wallet</item>
+        <item>Bank Account</item>
+        <item>Cash</item>
+        <item>Credit Card</item>
+        <item>Investment</item>
+        <item>Other</item>
+    </string-array>
+</resources>
