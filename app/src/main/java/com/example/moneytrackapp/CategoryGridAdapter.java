@@ -40,7 +40,19 @@ public class CategoryGridAdapter extends RecyclerView.Adapter<CategoryGridAdapte
     public void onBindViewHolder(ViewHolder holder, int position) {
         Category category = categories.get(position);
         holder.name.setText(category.getName());
-        holder.icon.setImageResource(category.getIconRes());
+
+        if (category.getIconRes() != -1) {
+            holder.icon.setImageResource(category.getIconRes());
+        } else if (category.getIconUrl() != null) {
+            String iconUrl = category.getIconUrl();
+            if (iconUrl.length() > 100 || iconUrl.startsWith("data:image")) {
+                byte[] decodedBytes = android.util.Base64.decode(iconUrl, android.util.Base64.DEFAULT);
+                android.graphics.Bitmap bitmap = android.graphics.BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+                holder.icon.setImageBitmap(bitmap);
+            } else {
+                com.bumptech.glide.Glide.with(context).load(iconUrl).into(holder.icon);
+            }
+        }
 
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {
@@ -48,6 +60,7 @@ public class CategoryGridAdapter extends RecyclerView.Adapter<CategoryGridAdapte
             }
         });
     }
+
 
     @Override
     public int getItemCount() {

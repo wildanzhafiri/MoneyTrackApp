@@ -1,47 +1,78 @@
 package com.example.moneytrackapp;
 
+import androidx.annotation.NonNull;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class CategoryData {
     private static final List<Category> categories = new ArrayList<>();
 
-    static {
-        categories.add(new Category("Groceries", R.drawable.ic_groceries));
-        categories.add(new Category("Gifts", R.drawable.ic_gifts));
-        categories.add(new Category("Bar & Cafe", R.drawable.ic_cafe));
-        categories.add(new Category("Health", R.drawable.ic_health));
-        categories.add(new Category("Commute", R.drawable.ic_transportation));
-        categories.add(new Category("Electronics", R.drawable.ic_electronics));
-        categories.add(new Category("Laundry", R.drawable.ic_laundry));
-        categories.add(new Category("Liquor", R.drawable.ic_liquor));
-        categories.add(new Category("Restaurant", R.drawable.ic_restaurant));
+    public interface OnDataLoaded {
+        void onLoaded();
     }
 
     public static List<Category> getCategories() {
         return categories;
     }
 
+    public static void loadCategories(OnDataLoaded callback) {
+        FirebaseHelper.fetchCategories(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                categories.clear();
+                for (DataSnapshot data : snapshot.getChildren()) {
+                    Category category = data.getValue(Category.class);
+                    if (category != null) {
+                        category.setId(data.getKey());
+                        categories.add(category);
+                    }
+                }
+
+                categories.sort(Comparator.comparingInt(Category::getOrderIndex));
+                callback.onLoaded();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                callback.onLoaded();
+            }
+        });
+    }
+
+
     public static void addCategory(Category category) {
-        categories.add(category);
+        category.setOrderIndex(categories.size());
+
+        String id = FirebaseHelper.getUserCategoryRef().push().getKey();
+        if (id != null) {
+            category.setId(id);
+            FirebaseHelper.addCategory(category);
+        }
     }
 
-    public static void updateCategory(String oldName, String newName, int newIconRes) {
-        for (Category category : categories) {
-            if (category.getName().equals(oldName)) {
-                category.setName(newName);
-                category.setIconRes(newIconRes);
+    public static void updateCategory(String id, String newName, int newIconRes) {
+        for (Category cat : categories) {
+            if (cat.getId().equals(id)) {
+                cat.setName(newName);
+                cat.setIconRes(newIconRes);
+                FirebaseHelper.updateCategoryById(id, cat);
                 break;
             }
         }
     }
 
-    public static void deleteCategory(String name) {
-        for (int i = 0; i < categories.size(); i++) {
-            if (categories.get(i).getName().equals(name)) {
-                categories.remove(i);
-                break;
-            }
-        }
+    public static void deleteCategory(String id) {
+        FirebaseHelper.deleteCategoryById(id);
+    }
+
+    public static void setCategories(List<Category> newList) {
+        categories.clear();
+        categories.addAll(newList);
     }
 }

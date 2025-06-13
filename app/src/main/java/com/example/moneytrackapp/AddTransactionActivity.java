@@ -56,15 +56,14 @@ public class AddTransactionActivity extends AppCompatActivity {
 
         categoryRecycler = findViewById(R.id.categoryRecyclerView);
         categoryRecycler.setLayoutManager(new GridLayoutManager(this, 3));
-        CategoryGridAdapter categoryAdapter = new CategoryGridAdapter(this, CategoryData.getCategories());
-        categoryRecycler.setAdapter(categoryAdapter);
 
-        categoryAdapter.setOnCategoryClickListener(categoryName -> etCategory.setText(categoryName));
+        CategoryData.loadCategories(() -> {
+            categoryAdapter = new CategoryGridAdapter(this, CategoryData.getCategories());
+            categoryRecycler.setAdapter(categoryAdapter);
 
-        Button btnUpload = findViewById(R.id.btn_upload_image);
-        btnUpload.setOnClickListener(v -> {
-            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            startActivityForResult(intent, IMAGE_PICK_CODE);
+            categoryAdapter.setOnCategoryClickListener(categoryName -> {
+                etCategory.setText(categoryName);
+            });
         });
 
         Button btnManageCategory = findViewById(R.id.manage_category_button);

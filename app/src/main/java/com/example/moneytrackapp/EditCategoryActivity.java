@@ -1,17 +1,22 @@
 package com.example.moneytrackapp;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Base64;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
-import com.example.moneytrackapp.ToastUtils;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class EditCategoryActivity extends AppCompatActivity {
@@ -20,7 +25,10 @@ public class EditCategoryActivity extends AppCompatActivity {
     private EditText nameInput;
     private ImageView selectedIcon;
     private IconGridAdapter adapter;
+
     private int selectedIconRes = -1;
+    private String selectedIconUrl = null;
+    private String categoryId;
     private String initialCategoryName;
 
     @Override
@@ -45,49 +53,75 @@ public class EditCategoryActivity extends AppCompatActivity {
                 R.drawable.ic_donate
         );
 
-        adapter = new IconGridAdapter(this, iconList);
+        List<String> uploadedIconUrls = Collections.emptyList();
+
+        adapter = new IconGridAdapter(this, iconList, uploadedIconUrls);
         iconRecyclerView.setLayoutManager(new GridLayoutManager(this, 4));
         iconRecyclerView.setAdapter(adapter);
 
         Intent intent = getIntent();
-        String mode = intent.getStringExtra("mode");
-        if ("edit".equals(mode)) {
-            initialCategoryName = intent.getStringExtra("category_name");
-            selectedIconRes = intent.getIntExtra("icon_res", -1);
+        categoryId = intent.getStringExtra("category_id");
+        initialCategoryName = intent.getStringExtra("category_name");
+        selectedIconRes = intent.getIntExtra("icon_res", -1);
+        selectedIconUrl = intent.getStringExtra("icon_url");
 
-            nameInput.setText(initialCategoryName);
-            if (selectedIconRes != -1) {
-                selectedIcon.setImageResource(selectedIconRes);
-                adapter.setSelectedIcon(selectedIconRes);
+        nameInput.setText(initialCategoryName);
+
+        if (selectedIconRes != -1) {
+            selectedIcon.setImageResource(selectedIconRes);
+            adapter.setSelectedIconFromRes(selectedIconRes);
+        } else if (selectedIconUrl != null && !selectedIconUrl.isEmpty()) {
+            if (selectedIconUrl.startsWith("data:image") || selectedIconUrl.length() > 100) {
+                byte[] imageBytes = Base64.decode(selectedIconUrl, Base64.DEFAULT);
+                Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+                selectedIcon.setImageBitmap(bitmap);
+            } else {
+                Glide.with(this).load(selectedIconUrl).into(selectedIcon);
             }
         }
 
-        adapter.setOnIconClickListener(iconRes -> {
-            selectedIconRes = iconRes;
-            selectedIcon.setImageResource(iconRes);
+
+        adapter.setOnIconSelectedListener((resId, imageUrl) -> {
+            selectedIconRes = resId;
+            selectedIconUrl = imageUrl;
+
+            if (resId != -1) {
+                selectedIcon.setImageResource(resId);
+            } else {
+                Glide.with(this).load(imageUrl).into(selectedIcon);
+            }
         });
 
         Button btnDone = findViewById(R.id.btn_done);
         btnDone.setOnClickListener(v -> {
             String newCategoryName = nameInput.getText().toString().trim();
 
-            if (newCategoryName.isEmpty() || selectedIconRes == -1) {
+            if (newCategoryName.isEmpty() || (selectedIconRes == -1 && selectedIconUrl == null)) {
                 ToastUtils.showStaticToast(this, "Please fill all fields");
-            } else {
-                CategoryData.updateCategory(initialCategoryName, newCategoryName, selectedIconRes);
-                ToastUtils.showStaticToast(this, "Category updated successfully!");
-                finish();
+                return;
             }
-        });
 
+            if (categoryId == null || categoryId.isEmpty()) {
+                ToastUtils.showStaticToast(this, "Category ID not found!");
+                return;
+            }
 
-        Button btnDelete = findViewById(R.id.btn_delete_category);
-        btnDelete.setOnClickListener(v -> {
-            CategoryData.deleteCategory(initialCategoryName);
-            ToastUtils.showStaticToast(this, "Category deleted successfully!");
+            Category updated = new Category();
+            updated.setId(categoryId);
+            updated.setName(newCategoryName);
+            updated.setIconRes(selectedIconRes);
+            updated.setIconUrl(selectedIconUrl);
+
+            CategoryData.updateCategory(categoryId, newCategoryName, selectedIconRes); // Optional: bisa diubah pakai objek
+            ToastUtils.showStaticToast(this, "Category updated successfully!");
             finish();
         });
 
-
+        Button btnDelete = findViewById(R.id.btn_delete_category);
+        btnDelete.setOnClickListener(v -> {
+            CategoryData.deleteCategory(categoryId);
+            ToastUtils.showStaticToast(this, "Category deleted successfully!");
+            finish();
+        });
     }
 }
