@@ -63,8 +63,8 @@ public class BottomNavbarView extends LinearLayout {
         });
 
         iconSetting.setOnClickListener(v -> {
-            if (!(context instanceof ProfileActivity)) {
-                context.startActivity(new Intent(context, ProfileActivity.class));
+            if (!(context instanceof SettingsActivity)) {
+                context.startActivity(new Intent(context, SettingsActivity.class));
             }
         });
     }

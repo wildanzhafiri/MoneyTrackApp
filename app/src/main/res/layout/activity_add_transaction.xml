@@ -123,14 +123,14 @@
                     android:layout_marginBottom="16dp"/>
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/categoryRecyclerView"
-                    android:layout_width="match_parent"
-                    android:layout_height="260dp"
-                    android:paddingBottom="20dp"
-                    android:minHeight="100dp"
-                    android:nestedScrollingEnabled="false"
-                    android:overScrollMode="ifContentScrolls"
-                    />
+                        android:id="@+id/categoryRecyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="260dp"
+                        android:paddingBottom="20dp"
+                        android:nestedScrollingEnabled="true"
+                        android:overScrollMode="always"
+                        />
+
 
                 <Button
                     android:id="@+id/manage_category_button"
