@@ -55,6 +55,7 @@ dependencies {
     implementation(libs.credentials.play.services.auth)
     implementation(libs.googleid)
     implementation(libs.firebase.database)
+    implementation(libs.firebase.storage)
     annotationProcessor(libs.room.compiler)
     implementation(libs.glide)
     implementation(libs.circleimageview)

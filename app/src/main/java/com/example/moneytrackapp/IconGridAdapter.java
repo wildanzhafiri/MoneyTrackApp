@@ -1,6 +1,9 @@
 package com.example.moneytrackapp;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,18 +12,25 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class IconGridAdapter extends RecyclerView.Adapter<IconGridAdapter.ViewHolder> {
 
     private final Context context;
-    private final List<Integer> icons;
+    private final List<Integer> localIcons;
+    private final List<String> uploadedIconUrls;
     private int selectedPosition = -1;
-    private OnIconClickListener listener;
+    private OnIconSelectedListener listener;
 
-    public IconGridAdapter(Context context, List<Integer> icons) {
+    public interface OnIconSelectedListener {
+        void onIconSelected(int iconRes, String imageUrl);
+    }
+
+    public IconGridAdapter(Context context, List<Integer> localIcons, List<String> uploadedIconUrls) {
         this.context = context;
-        this.icons = icons;
+        this.localIcons = localIcons;
+        this.uploadedIconUrls = uploadedIconUrls != null ? uploadedIconUrls : new ArrayList<>();
     }
 
     @NonNull
@@ -32,61 +42,55 @@ public class IconGridAdapter extends RecyclerView.Adapter<IconGridAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        int iconRes = icons.get(position);
-        holder.icon.setImageResource(iconRes);
+        boolean isLocal = position < localIcons.size();
 
-        if (selectedPosition == position) {
-            holder.icon.setBackgroundResource(R.drawable.bg_dashed_circle);
+        if (isLocal) {
+            holder.icon.setImageResource(localIcons.get(position));
         } else {
-            holder.icon.setBackground(null);
+            String base64 = uploadedIconUrls.get(position - localIcons.size());
+            byte[] imageBytes = Base64.decode(base64, Base64.DEFAULT);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+            holder.icon.setImageBitmap(bitmap);
         }
 
+
+        holder.icon.setBackgroundResource(selectedPosition == position ? R.drawable.bg_dashed_circle : 0);
+
         holder.itemView.setOnClickListener(v -> {
-            if (selectedPosition == position) {
-                return;
-            }
-
-            int prevPosition = selectedPosition;
+            int previous = selectedPosition;
             selectedPosition = position;
-
-            if (prevPosition != -1) notifyItemChanged(prevPosition);
+            notifyItemChanged(previous);
             notifyItemChanged(position);
 
             if (listener != null) {
-                listener.onIconClick(iconRes);
+                if (isLocal) {
+                    listener.onIconSelected(localIcons.get(position), null);
+                } else {
+                    listener.onIconSelected(-1, uploadedIconUrls.get(position - localIcons.size()));
+                }
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        return icons.size();
+        return localIcons.size() + uploadedIconUrls.size();
     }
 
-    public void setSelectedIcon(int iconRes) {
-        int prevSelected = selectedPosition;
+    public void setOnIconSelectedListener(OnIconSelectedListener listener) {
+        this.listener = listener;
+    }
 
-        for (int i = 0; i < icons.size(); i++) {
-            if (icons.get(i) == iconRes) {
+    public void setSelectedIconFromRes(int resId) {
+        for (int i = 0; i < localIcons.size(); i++) {
+            if (localIcons.get(i) == resId) {
+                int previous = selectedPosition;
                 selectedPosition = i;
+                notifyItemChanged(previous);
+                notifyItemChanged(selectedPosition);
                 break;
             }
         }
-
-        if (prevSelected != -1) notifyItemChanged(prevSelected);
-        if (selectedPosition != -1) notifyItemChanged(selectedPosition);
-    }
-
-    public int getSelectedIconRes() {
-        return selectedPosition >= 0 ? icons.get(selectedPosition) : -1;
-    }
-
-    public interface OnIconClickListener {
-        void onIconClick(int iconRes);
-    }
-
-    public void setOnIconClickListener(OnIconClickListener listener) {
-        this.listener = listener;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

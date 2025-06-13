@@ -35,11 +35,13 @@ public class AddTransactionActivity extends AppCompatActivity {
         categoryRecycler = findViewById(R.id.categoryRecyclerView);
         categoryRecycler.setLayoutManager(new GridLayoutManager(this, 3));
 
-        categoryAdapter = new CategoryGridAdapter(this, CategoryData.getCategories());
-        categoryRecycler.setAdapter(categoryAdapter);
+        CategoryData.loadCategories(() -> {
+            categoryAdapter = new CategoryGridAdapter(this, CategoryData.getCategories());
+            categoryRecycler.setAdapter(categoryAdapter);
 
-        categoryAdapter.setOnCategoryClickListener(categoryName -> {
-            etCategory.setText(categoryName);
+            categoryAdapter.setOnCategoryClickListener(categoryName -> {
+                etCategory.setText(categoryName);
+            });
         });
 
         Button manageCategoryButton = findViewById(R.id.manage_category_button);
