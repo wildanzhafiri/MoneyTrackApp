@@ -1,12 +1,11 @@
 package com.example.moneytrackapp;
 
-import android.content.Context;
+import android.app.Activity;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.app.Activity;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -33,6 +32,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     @Override
     public void onBindViewHolder(@NonNull TransactionViewHolder holder, int position) {
         Transaction t = transactions.get(position);
+
         holder.category.setText(t.category);
         holder.amount.setText(t.amount);
         holder.description.setText(t.description);
@@ -41,14 +41,10 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(activity, DetailTransactionActivity.class);
-            intent.putExtra("date", t.date);
-            intent.putExtra("amount", t.amount);
-            intent.putExtra("category", t.category);
-            intent.putExtra("description", t.description);
+            intent.putExtra("transactionId", t.id);
             activity.startActivityForResult(intent, 1);
         });
     }
-
 
     @Override
     public int getItemCount() {
@@ -56,7 +52,6 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     }
 
     public static class TransactionViewHolder extends RecyclerView.ViewHolder {
-
         TextView category, amount, description, date;
 
         public TransactionViewHolder(@NonNull View itemView) {
@@ -72,5 +67,4 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         this.transactions = newData;
         notifyDataSetChanged();
     }
-
 }

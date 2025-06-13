@@ -127,6 +127,18 @@
             </LinearLayout>
 
             <Button
+                android:id="@+id/btn_upload_image"
+                android:layout_width="320dp"
+                android:layout_height="55dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/bg_button_continue"
+                android:text="Upload Custom Icon"
+                android:textColor="@android:color/white"
+                android:textStyle="bold"
+                android:elevation="4dp"/>
+
+            <Button
                 android:id="@+id/btn_add_category"
                 android:layout_width="320dp"
                 android:layout_gravity="center"

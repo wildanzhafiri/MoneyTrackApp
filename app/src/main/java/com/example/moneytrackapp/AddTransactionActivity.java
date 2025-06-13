@@ -1,15 +1,29 @@
 package com.example.moneytrackapp;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.util.Base64;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.ArrayAdapter;
+import android.widget.Toast;
+
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -18,13 +32,21 @@ public class AddTransactionActivity extends AppCompatActivity {
 
     private Spinner spinner;
     private RecyclerView categoryRecycler;
-    private CategoryGridAdapter categoryAdapter;
+    private String base64Image = null;
+    private static final int IMAGE_PICK_CODE = 1000;
+
+    private EditText etCategory, etAmount, etDesc;
+    private ImageView ivPreview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_transaction);
-        EditText etCategory = findViewById(R.id.et_category);
+
+        etCategory = findViewById(R.id.et_category);
+        etAmount = findViewById(R.id.et_amount);
+        etDesc = findViewById(R.id.et_description);
+        ivPreview = findViewById(R.id.iv_preview);
 
         spinner = findViewById(R.id.spinner_type);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
@@ -35,40 +57,65 @@ public class AddTransactionActivity extends AppCompatActivity {
         categoryRecycler = findViewById(R.id.categoryRecyclerView);
         categoryRecycler.setLayoutManager(new GridLayoutManager(this, 3));
 
-        categoryAdapter = new CategoryGridAdapter(this, CategoryData.getCategories());
-        categoryRecycler.setAdapter(categoryAdapter);
+        CategoryData.loadCategories(() -> {
+            categoryAdapter = new CategoryGridAdapter(this, CategoryData.getCategories());
+            categoryRecycler.setAdapter(categoryAdapter);
 
-        categoryAdapter.setOnCategoryClickListener(categoryName -> {
-            etCategory.setText(categoryName);
+            categoryAdapter.setOnCategoryClickListener(categoryName -> {
+                etCategory.setText(categoryName);
+            });
         });
 
-        Button manageCategoryButton = findViewById(R.id.manage_category_button);
-        manageCategoryButton.setOnClickListener(v -> {
+        Button btnManageCategory = findViewById(R.id.manage_category_button);
+        btnManageCategory.setOnClickListener(v -> {
             Intent intent = new Intent(this, ManageCategoryActivity.class);
             startActivity(intent);
         });
 
-        Button manageContinueButton = findViewById(R.id.btn_continue);
-        manageContinueButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this, TransactionActivity.class);
-            EditText etAmount = findViewById(R.id.et_amount);
-            EditText etDesc = findViewById(R.id.et_description);
-            Spinner spinnerType = findViewById(R.id.spinner_type);
-
+        Button btnContinue = findViewById(R.id.btn_continue);
+        btnContinue.setOnClickListener(v -> {
             String category = etCategory.getText().toString();
             String amount = "Rp " + etAmount.getText().toString();
             String desc = etDesc.getText().toString();
             String date = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(new Date());
-            String type = spinnerType.getSelectedItem().toString();
+            String type = spinner.getSelectedItem().toString();
 
             int colorResId = type.equals("Income") ?
                     R.drawable.category_label_background_green :
                     R.drawable.category_label_background;
 
-            Transaction newTransaction = new Transaction(category, amount, desc, date, colorResId);
-            TransactionRepository.addTransaction(newTransaction);
+            // ✅ Ambil UID user login
+            String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            DatabaseReference dbRef = FirebaseDatabase
+                    .getInstance("https://moneytrackapp-56fdd-default-rtdb.asia-southeast1.firebasedatabase.app/")
+                    .getReference("users")
+                    .child(uid)
+                    .child("transactions");
 
-            startActivity(intent);
+            String transactionId = dbRef.push().getKey();
+
+            if (transactionId != null) {
+                TransactionFirebase firebaseTransaction = new TransactionFirebase(
+                        category, amount, desc, date, base64Image, colorResId
+                );
+
+                dbRef.child(transactionId).setValue(firebaseTransaction)
+                        .addOnSuccessListener(aVoid -> {
+                            Transaction localTransaction = new Transaction(transactionId, category, amount, desc, date, colorResId, base64Image);
+                            TransactionRepository.addTransaction(localTransaction);
+
+                            Toast.makeText(this, "Transaction saved", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(this, DetailTransactionActivity.class);
+                            intent.putExtra("transactionId", transactionId);
+                            startActivity(intent);
+                            finish();
+                        })
+                        .addOnFailureListener(e -> {
+                            Toast.makeText(this, "Failed to save transaction", Toast.LENGTH_SHORT).show();
+                        });
+            } else {
+                Toast.makeText(this, "Failed to generate transaction ID", Toast.LENGTH_SHORT).show();
+            }
         });
 
         BottomNavbarView bottomNav = findViewById(R.id.bottom_nav);
@@ -76,10 +123,23 @@ public class AddTransactionActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        if (categoryAdapter != null) {
-            categoryAdapter.notifyDataSetChanged();
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK && requestCode == IMAGE_PICK_CODE && data != null) {
+            Uri selectedImageUri = data.getData();
+
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);
+                ivPreview.setImageBitmap(bitmap);
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 40, baos);
+                byte[] imageBytes = baos.toByteArray();
+                base64Image = Base64.encodeToString(imageBytes, Base64.DEFAULT);
+            } catch (IOException e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Failed to load image", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 }

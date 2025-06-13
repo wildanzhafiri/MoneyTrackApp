@@ -5,7 +5,9 @@ plugins {
 
 android {
     namespace = "com.example.moneytrackapp"
+
     compileSdk = 36
+
 
     defaultConfig {
         applicationId = "com.example.moneytrackapp"
@@ -43,6 +45,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.firebase.database.v2030)
     implementation(libs.recyclerview)
     implementation(libs.appcompat)
     implementation(libs.material)
@@ -54,9 +57,11 @@ dependencies {
     implementation(libs.credentials.play.services.auth)
     implementation(libs.googleid)
     implementation(libs.firebase.database)
+    implementation(libs.firebase.storage)
     annotationProcessor(libs.room.compiler)
     implementation(libs.glide)
     implementation(libs.circleimageview)
+    implementation(libs.firebase.database)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

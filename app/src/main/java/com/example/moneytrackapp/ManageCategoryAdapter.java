@@ -44,11 +44,29 @@ public class ManageCategoryAdapter extends RecyclerView.Adapter<ManageCategoryAd
     public void onBindViewHolder(@NonNull ManageCategoryAdapter.ViewHolder holder, int position) {
         Category item = categoryList.get(position);
         holder.name.setText(item.getName());
-        holder.icon.setImageResource(item.getIconRes());
+        if (item.getIconRes() != -1) {
+            holder.icon.setImageResource(item.getIconRes());
+        } else if (item.getIconUrl() != null) {
+            String iconUrl = item.getIconUrl();
+            if (iconUrl.length() > 100 || iconUrl.startsWith("data:image")) {
+                byte[] decodedBytes = android.util.Base64.decode(iconUrl, android.util.Base64.DEFAULT);
+                android.graphics.Bitmap bitmap = android.graphics.BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+                holder.icon.setImageBitmap(bitmap);
+            } else {
+                com.bumptech.glide.Glide.with(context).load(iconUrl).into(holder.icon);
+            }
+        }
 
         holder.edit.setOnClickListener(v -> {
+            if (item.getId() == null) {
+                Toast.makeText(context, "Error: ID not found", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+
             Intent intent = new Intent(context, EditCategoryActivity.class);
             intent.putExtra("mode", "edit");
+            intent.putExtra("category_id", item.getId());
             intent.putExtra("category_name", item.getName());
             intent.putExtra("icon_res", item.getIconRes());
             context.startActivity(intent);
