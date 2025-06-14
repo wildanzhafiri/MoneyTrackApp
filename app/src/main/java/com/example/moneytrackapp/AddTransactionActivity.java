@@ -34,7 +34,7 @@ public class AddTransactionActivity extends AppCompatActivity {
     private RecyclerView categoryRecycler;
     private String base64Image = null;
     private static final int IMAGE_PICK_CODE = 1000;
-
+    private CategoryGridAdapter categoryAdapter;
     private EditText etCategory, etAmount, etDesc;
     private ImageView ivPreview;
 
@@ -116,6 +116,12 @@ public class AddTransactionActivity extends AppCompatActivity {
             } else {
                 Toast.makeText(this, "Failed to generate transaction ID", Toast.LENGTH_SHORT).show();
             }
+        });
+
+        Button btnUpload = findViewById(R.id.btn_upload_image);
+        btnUpload.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            startActivityForResult(intent, IMAGE_PICK_CODE);
         });
 
         BottomNavbarView bottomNav = findViewById(R.id.bottom_nav);
